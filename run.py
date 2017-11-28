@@ -11,6 +11,8 @@ def create_app(config):
     app.config.from_ras_config(config)
 
     # register view blueprints
+    from application.views.info_view import info_view
+    app.register_blueprint(info_view)
 
     CORS(app)
     return app
