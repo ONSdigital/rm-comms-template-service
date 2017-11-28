@@ -1,0 +1,12 @@
+service:
+    NAME: rm-comms-template
+    VERSION: 0.0.1
+    SCHEME: http
+    HOST: 0.0.0.0
+    PORT: 8081
+    DEBUG: False
+
+dependencies:
+    rm-comms-template-db:
+        schema: comms-template-service
+        uri: "postgres://postgres:postgres@postgres:5432/postgres"

@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  db:
+    container_name: postgres
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  comms-template-service:
+    container_name: comms-template-service
+    build: ./
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
