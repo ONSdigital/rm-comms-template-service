@@ -35,4 +35,3 @@ class CommunicationTemplate(Base):
     uri = Column(Text)
     classification = Column(JSONB)
     params = Column(JSONB)
-

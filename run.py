@@ -18,8 +18,10 @@ def create_app(config_path):
 
     # register view blueprints
     from application.views.info_view import info_view
+    from application.views.template_view import template_view
     from application import error_handlers
     app.register_blueprint(info_view)
+    app.register_blueprint(template_view)
     app.register_blueprint(error_handlers.blueprint)
 
     CORS(app)

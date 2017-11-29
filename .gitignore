@@ -1,5 +1,6 @@
 *.pyc
 .idea/
 .tox/
-htmlcov/
 .coverage
+.cache/
+htmlcov/
