@@ -1,7 +1,7 @@
 from functools import wraps
 
 from flask import current_app
-from ras_common_utils.ras_error.ras_error import RasDatabaseError, RasError
+from application.utils.exceptions import DatabaseError
 from structlog import get_logger
 
 log = get_logger()
@@ -23,14 +23,14 @@ def with_db_session(f):
             log.info("Committing database session.")
             session.commit()
             return result
-        except RasError:
+        except DatabaseError:
             log.info("Rolling-back database session.")
             session.rollback()
             raise
         except Exception as e:
             log.info("Rolling-back database session.")
             session.rollback()
-            raise RasDatabaseError("There was an error committing the changes to the database. Details: {}".format(e))
+            raise DatabaseError("There was an error committing the changes to the database. Details: {}".format(e))
         finally:
             log.info("Removing database session.")
             current_app.db.session.remove()

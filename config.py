@@ -12,5 +12,3 @@ class Config(object):
                                         "postgres://postgres:postgres@postgres:5432/postgres")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-
-

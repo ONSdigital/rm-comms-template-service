@@ -1,10 +1,5 @@
-from flask import Blueprint
-from flask import jsonify
-<<<<<<< HEAD
-=======
-from requests import HTTPError
-from application.utils.exceptions import InvalidTemplateObject, RasError
->>>>>>> Adds Post Comms Template endpoint
+from flask import Blueprint, jsonify
+from application.utils.exceptions import InvalidTemplateObject
 
 from structlog import get_logger
 
