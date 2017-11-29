@@ -8,5 +8,5 @@ service:
 
 dependencies:
     rm-comms-template-db:
-        schema: comms-template-service
+        schema: templatesvc
         uri: "postgres://postgres:postgres@postgres:5432/postgres"

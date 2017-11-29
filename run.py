@@ -4,15 +4,23 @@ from ras_common_utils.ras_config.flask_extended import Flask
 from ras_common_utils.ras_database.ras_database import RasDatabase
 from ras_common_utils.ras_logger.ras_logger import configure_logger
 
+from flask import make_response, jsonify
+
 
 def create_app(config):
     # create and configure the Flask app
     app = Flask(__name__)
     app.config.from_ras_config(config)
 
+    @app.route('/', methods=['GET'])
+    def hello_world():
+        return make_response(jsonify("hello world"), 200)
+
     # register view blueprints
     from application.views.info_view import info_view
+    from application import error_handlers
     app.register_blueprint(info_view)
+    app.register_blueprint(error_handlers.blueprint)
 
     CORS(app)
     return app
@@ -35,6 +43,6 @@ if __name__ == '__main__':
 
     initialise_db(app)
 
-    scheme, host, port = app.config['SCHEME'], app.config['HOST'], int(app.config['PORT'])
+    host, port = app.config['HOST'], int(app.config['PORT'])
 
     app.run(debug=app.config['DEBUG'], host=host, port=port)

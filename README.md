@@ -24,6 +24,11 @@ pipenv install
 ```bash
 docker-compose up
 ```
+To test the service is up:
+
+```
+curl http://localhost:8081/info
+```
 
 ## Database
 
