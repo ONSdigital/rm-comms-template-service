@@ -4,17 +4,11 @@ from ras_common_utils.ras_config.flask_extended import Flask
 from ras_common_utils.ras_database.ras_database import RasDatabase
 from ras_common_utils.ras_logger.ras_logger import configure_logger
 
-from flask import make_response, jsonify
-
 
 def create_app(config):
     # create and configure the Flask app
     app = Flask(__name__)
     app.config.from_ras_config(config)
-
-    @app.route('/', methods=['GET'])
-    def hello_world():
-        return make_response(jsonify("hello world"), 200)
 
     # register view blueprints
     from application.views.info_view import info_view
