@@ -23,14 +23,14 @@ def with_db_session(f):
             log.info("Committing database session.")
             session.commit()
             return result
-        except InvalidTemplateException:
+        except InvalidTemplateException as exception:
             log.info("Rolling-back database session.")
             session.rollback()
-            raise InvalidTemplateException(status_code=400)
-        except DatabaseError:
+            raise InvalidTemplateException(exception.error, status_code=400)
+        except DatabaseError as exception:
             log.info("Rolling-back database session.")
             session.rollback()
-            raise DatabaseError(status_code=400)
+            raise DatabaseError(exception.error, status_code=400)
         except Exception as e:
             log.info("Rolling-back database session.")
             session.rollback()

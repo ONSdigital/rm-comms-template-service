@@ -6,19 +6,19 @@ from application.utils.database import db
 
 
 class CommunicationType(enum.Enum):
-    EMAIL: 0
-    LETTER: 1
-    SMS: 2
+    EMAIL = "EMAIL"
+    LETTER = "LETTER"
+    SMS = "SMS"
 
 
 class ClassificationType(enum.Enum):
-    LEGAL_STATUS: 0
-    INDUSTRY: 1
-    GEOGRAPH: 2
-    COLLECTION_EXERCISE: 3
-    RU_REF: 4
-    SURVEY_REF: 5
-    ENROLMENT_STATUS: 6
+    LEGAL_STATUS = "LEGAL_STATUS"
+    INDUSTRY = "INDUSTRY"
+    GEOGRAPHY = "GEOGRAPHY"
+    COLLECTION_EXERCISE = "COLLECTION_EXERCISE"
+    RU_REF = "RU_REF"
+    SURVEY_REF = "SURVEY_REF"
+    ENROLMENT_STATUS = "ENROLMENT_STATUS"
 
 
 class CommunicationTemplate(db.Model):

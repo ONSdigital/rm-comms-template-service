@@ -2,5 +2,11 @@ language: python
 python:
   - "3.6"
 install:
-    - pip install pipenv
-    - pipenv install --dev
+  - pip install pipenv
+  - pipenv install --dev --deploy
+  - pipenv check
+  - pip install tox==2.7.0
+script:
+  - pipenv run tox
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

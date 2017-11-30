@@ -1,12 +1,14 @@
 from application.models.models import CommunicationTemplate
 from application.utils.session_wrapper import with_db_session
 from application.utils.exceptions import InvalidTemplateException
+from application.models.schema import template_schema
+from jsonschema import validate, ValidationError
 from structlog import get_logger
 
 
 logger = get_logger()
 
-UPLOAD_SUCCESSFUL = 'The upload was successful'  # FIXME: do i want to return a message or a boolean?
+UPLOAD_SUCCESSFUL = 'The upload was successful'
 
 
 def get_template_by_id(template_id, session):
@@ -14,9 +16,11 @@ def get_template_by_id(template_id, session):
 
 
 def validate_template(template):
-    # FIXME: validate with jsonschema?
-    # TODO: RAISE AN INVALIDTEMPLATEOBJECT exception, 400 code AS BAD REQUEST
-    pass
+    try:
+        validate(template, template_schema)
+    except ValidationError as exception:
+        logger.info("Attempted to upload invalid template")
+        raise InvalidTemplateException('Template is invalid', status_code=400)
 
 
 class TemplateController(object):

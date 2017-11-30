@@ -1,4 +1,5 @@
 # RM Comms Template
+[![Build Status](https://travis-ci.org/ONSdigital/rm-comms-template-service.svg?branch=master)](https://travis-ci.org/ONSdigital/rm-comms-template-service) 
 
 ## Overview
 This is the RAS Comms Template micro-service.
