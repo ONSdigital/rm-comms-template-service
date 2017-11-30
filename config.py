@@ -3,7 +3,6 @@ import os
 
 class Config(object):
     NAME = os.getenv('NAME', "rm-comms-template")
-    VERSION = os.getenv("VERSION", "0.0.1")
     SCHEME = os.getenv("SCHEME", "http")
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = os.getenv("PORT", 8081)

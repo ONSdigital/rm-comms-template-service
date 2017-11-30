@@ -27,6 +27,9 @@ class ClassificationType(enum.Enum):
 
 class CommunicationTemplate(Base):
     __tablename__ = 'template'
+    __tableargs__ = (
+        
+    )
 
     id = Column(UUID, unique=True, primary_key=True)
     label = Column(Text)

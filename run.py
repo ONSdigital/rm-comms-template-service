@@ -9,7 +9,11 @@ def create_app(config_path):
     app.config.from_object(config_path)
 
     # set up DB
-    SQLAlchemy(app)
+    app.db = SQLAlchemy(app)
+    # need to import models before initializing tables
+    from application.models.models import CommunicationTemplate, CommunicationType, ClassificationType
+
+    app.db.create_all()
 
     # register view blueprints
     from application.views.info_view import info_view
