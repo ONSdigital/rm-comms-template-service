@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6b1c90ce020305558765948ae94321c028a3f242d3aa3a72332e6da6176c2fc5"
+            "sha256": "12018d77168f9eb678189cacdc83232e1f43a3d2af435a0b640b38f0fc2a7dc3"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -71,6 +71,10 @@
                 "sha256:5f4ba7ab79103e28b566c6a0592076312d17c716e079c66ca9ffe21a7871ee8d"
             ],
             "version": "==3.2.3"
+        },
+        "flask-sqlalchemy": {
+            "hashes": [],
+            "version": "==2.3"
         },
         "gunicorn": {
             "hashes": [
@@ -174,10 +178,6 @@
                 "sha256:5ac82e411044fb129bae5cfbeb3ba626acb2af31a8d17d175004b70862a741a7"
             ],
             "version": "==3.12"
-        },
-        "ras-common-utils": {
-            "git": "https://github.com/ONSdigital/ras-common-utils.git",
-            "ref": "0.0.7"
         },
         "requests": {
             "hashes": [

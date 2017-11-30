@@ -18,7 +18,4 @@ def get_info():
     }
     info = dict(_health_check, **info)
 
-    if current_app.config.feature.report_dependencies:
-        info["dependencies"] = [{'name': name} for name in current_app.config.dependency.keys()]
-
     return info
