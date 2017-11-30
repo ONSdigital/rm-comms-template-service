@@ -10,7 +10,7 @@ class Config(object):
     SCHEMA = os.getenv("SCHEMA", "templatesvc")
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI",
                                         "postgres://postgres:postgres@postgres:5432/postgres")
-    SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS", False)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 

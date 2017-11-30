@@ -1,11 +1,10 @@
 from flask import Blueprint
 from flask import jsonify
 
-import logging
-from structlog import wrap_logger
+from structlog import get_logger
 
 
-logger = wrap_logger(logging.getLogger(__name__))
+logger = get_logger()
 
 blueprint = Blueprint('error_handlers', __name__)
 

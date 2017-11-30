@@ -1,6 +1,7 @@
 from flask_cors import CORS
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from application.utils.logging import configure_structlogger
 
 
 def create_app(config_path):
@@ -29,6 +30,8 @@ if __name__ == '__main__':
     config_path = "config.Config"
 
     app = create_app(config_path)
+
+    configure_structlogger(app.config)
 
     host, port = app.config['HOST'], int(app.config['PORT'])
 
