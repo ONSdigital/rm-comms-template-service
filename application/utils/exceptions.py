@@ -5,10 +5,10 @@ class CommsTemplateException(Exception):
 
     def __init__(self, errors, status_code=None):
         self.errors = errors if type(errors) is list else [errors]
-        self.status_code = status_code or InvalidTemplateObject.status_code
+        self.status_code = status_code or InvalidTemplateException.status_code
 
 
-class InvalidTemplateObject(CommsTemplateException):
+class InvalidTemplateException(CommsTemplateException):
     pass
 
 

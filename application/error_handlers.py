@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from application.utils.exceptions import InvalidTemplateObject
+from application.utils.exceptions import InvalidTemplateException
 
 from structlog import get_logger
 
@@ -17,7 +17,7 @@ def exception_error(error):
     return response
 
 
-@blueprint.app_errorhandler(InvalidTemplateObject)
+@blueprint.app_errorhandler(InvalidTemplateException)
 def invalid_template_error(error):
     logger.info("Attempted to upload invalid template", error)
     response = jsonify({'error': "Attempted to upload invalid template"})

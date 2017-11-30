@@ -1,10 +1,10 @@
 from application.models.models import CommunicationTemplate
 from application.utils.session_wrapper import with_db_session
-from application.utils.exceptions import InvalidTemplateObject
+from application.utils.exceptions import InvalidTemplateException
 from structlog import get_logger
 
 
-log = get_logger()
+logger = get_logger()
 
 UPLOAD_SUCCESSFUL = 'The upload was successful'  # FIXME: do i want to return a message or a boolean?
 
@@ -24,17 +24,16 @@ class TemplateController(object):
     @staticmethod
     @with_db_session
     def upload_comms_template(template_id, template_object, session=None):
-        log.info('Uploading comms template with id {}.'.format(template_id))
+        logger.info('Uploading comms template with id {}.'.format(template_id))
 
         validate_template(template_object)
 
         existing_template = get_template_by_id(template_id, session)
 
         if existing_template:
-            log.info("Attempted to upload already existing template, id {}".format(template_id))
-            raise InvalidTemplateObject('Id already exists', status_code=400)
+            logger.info("Attempted to upload already existing template, id {}".format(template_id))
+            raise InvalidTemplateException('Id already exists', status_code=400)
 
-        # FIXME: do i need to change the default value for the get on each field?
         label = template_object.get('label')
         type = template_object.get('type')
         uri = template_object.get('uri')
@@ -46,6 +45,6 @@ class TemplateController(object):
 
         session.add(template)
 
-        log.info("Uploaded template with id {}".format(template_id))
+        logger.info("Uploaded template with id {}".format(template_id))
 
         return UPLOAD_SUCCESSFUL
