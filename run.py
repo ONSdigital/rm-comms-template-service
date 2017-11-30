@@ -9,7 +9,7 @@ def create_app(config_path):
     app = Flask(__name__)
     app.config.from_object(config_path)
 
-    from application.models.models import CommunicationTemplate, ClassificationType, CommunicationType
+    from application.models.models import CommunicationTemplate, ClassificationType, CommunicationType # NOQA  # pylint: disable=wrong-import-position
 
     # Set up database
     with app.app_context():

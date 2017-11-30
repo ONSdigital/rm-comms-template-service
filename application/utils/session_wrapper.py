@@ -1,7 +1,7 @@
 from functools import wraps
 
 from flask import current_app
-from application.utils.exceptions import DatabaseError
+from application.utils.exceptions import DatabaseError, InvalidTemplateException
 from structlog import get_logger
 
 log = get_logger()
@@ -23,10 +23,14 @@ def with_db_session(f):
             log.info("Committing database session.")
             session.commit()
             return result
+        except InvalidTemplateException:
+            log.info("Rolling-back database session.")
+            session.rollback()
+            raise InvalidTemplateException(status_code=400)
         except DatabaseError:
             log.info("Rolling-back database session.")
             session.rollback()
-            raise
+            raise DatabaseError(status_code=400)
         except Exception as e:
             log.info("Rolling-back database session.")
             session.rollback()

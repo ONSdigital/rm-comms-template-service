@@ -1,8 +1,6 @@
 import enum
 
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, Text
-from sqlalchemy.types import Enum
 from sqlalchemy.dialects.postgresql.json import JSONB
 from application.utils.database import db
 

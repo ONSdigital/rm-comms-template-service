@@ -4,3 +4,4 @@
 .coverage
 .cache/
 htmlcov/
+RM_Comms_Template.egg-info/
