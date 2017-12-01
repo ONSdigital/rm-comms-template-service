@@ -6,7 +6,6 @@ info_view = Blueprint('info_view', __name__)
 
 
 @info_view.route('/info', methods=['GET'])
-@log_route
 def get_info():
     response = info_controller.get_info()
     return make_response(jsonify(response), 200)

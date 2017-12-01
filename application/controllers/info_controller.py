@@ -2,6 +2,7 @@ from json import loads
 from pathlib import Path
 
 from flask import current_app
+from application import __version__
 
 
 _health_check = {}
@@ -14,11 +15,8 @@ if Path('git_info').exists():
 def get_info():
     info = {
         "name": current_app.config['NAME'],
-        "version": current_app.config['VERSION'],
+        "version": __version__,
     }
     info = dict(_health_check, **info)
-
-    if current_app.config.feature.report_dependencies:
-        info["dependencies"] = [{'name': name} for name in current_app.config.dependency.keys()]
 
     return info

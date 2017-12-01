@@ -1,9 +1,12 @@
 import enum
 
-from ras_common_utils.ras_database.base import Base
-from ras_common_utils.ras_database.guid import GUID
-from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey, ForeignKeyConstraint
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, Text
 from sqlalchemy.types import Enum
+from sqlalchemy.dialects.postgresql.json import JSONB
+
+Base = declarative_base()
 
 
 class CommunicationType(enum.Enum):
@@ -24,13 +27,12 @@ class ClassificationType(enum.Enum):
 
 class CommunicationTemplate(Base):
     __tablename__ = 'template'
+    __tableargs__ = {"schema": "templatesvc"}
 
-    id = Column(GUID, unique=True, primary_key=True)
+    id = Column(UUID, unique=True, primary_key=True)
     label = Column(Text)
-    type = Column(Enum(CommunicationType))  # FIXME: NEED TO CHECK HAS ALL FIELDS
+    type = Column(Enum(CommunicationType))
     uri = Column(Text)
-    # classification,
-    # params
-    # FIXME: need to use the native JSONB rather than the ras_common_utils for the classification and params fields
-
+    classification = Column(JSONB)
+    params = Column(JSONB)
 

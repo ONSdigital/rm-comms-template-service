@@ -1,40 +1,38 @@
 from flask_cors import CORS
-from ras_common_utils.ras_config import ras_config
-from ras_common_utils.ras_config.flask_extended import Flask
-from ras_common_utils.ras_database.ras_database import RasDatabase
-from ras_common_utils.ras_logger.ras_logger import configure_logger
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from application.utils.logging import configure_structlogger
 
 
-def create_app(config):
+def create_app(config_path):
     # create and configure the Flask app
     app = Flask(__name__)
-    app.config.from_ras_config(config)
+    app.config.from_object(config_path)
+
+    # set up DB
+    app.db = SQLAlchemy(app)
+    # need to import models before initializing tables
+    from application.models.models import CommunicationTemplate, CommunicationType, ClassificationType
+
+    app.db.create_all()
 
     # register view blueprints
     from application.views.info_view import info_view
+    from application import error_handlers
     app.register_blueprint(info_view)
+    app.register_blueprint(error_handlers.blueprint)
 
     CORS(app)
     return app
 
 
-def initialise_db(app):
-    # Initialise the database with the specified SQLAlchemy model
-    comms_template_database = RasDatabase.make(model_paths=['application.models.models'])
-    db = comms_template_database('rm-comms-template-db', app.config)
-    app.db = db
-
-
 if __name__ == '__main__':
-    config_path = 'config/config.yml'
+    config_path = "config.Config"
 
-    config = ras_config.from_yaml_file(config_path)
-    configure_logger(config.service)
+    app = create_app(config_path)
 
-    app = create_app(config)
+    configure_structlogger(app.config)
 
-    initialise_db(app)
-
-    scheme, host, port = app.config['SCHEME'], app.config['HOST'], int(app.config['PORT'])
+    host, port = app.config['HOST'], int(app.config['PORT'])
 
     app.run(debug=app.config['DEBUG'], host=host, port=port)
