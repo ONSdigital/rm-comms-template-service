@@ -5,7 +5,7 @@ class CommsTemplateException(Exception):
 
     def __init__(self, error, status_code=None):
         self.error = error
-        self.status_code = status_code or InvalidTemplateException.status_code
+        self.status_code = status_code or CommsTemplateException.status_code
 
 
 class InvalidTemplateException(CommsTemplateException):

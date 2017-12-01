@@ -3,8 +3,7 @@ template_schema = {
   "properties": {
     "id": {"type": "string"},
     "label": {"type": "string"},
-    "type": {"enum": ["SMS", "EMAIL", "LETTER"]},  # [CommunicationType.SMS,
-    # CommunicationType.EMAIL, CommunicationType.LETTER]},
+    "type": {"enum": ["SMS", "EMAIL", "LETTER"]},
     "uri": {"type": "string"},
     "classification": {"type": "object"},
     "params": {"type": "object"},

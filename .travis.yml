@@ -1,3 +1,6 @@
+sudo: required
+services:
+  - docker
 language: python
 python:
   - "3.6"
@@ -7,6 +10,7 @@ install:
   - pipenv check
   - pip install tox==2.7.0
 script:
+  - docker run -e POSTGRES_PASSWORD=postgres postgres:9.6
   - pipenv run tox
 after_success:
   - bash <(curl -s https://codecov.io/bash)

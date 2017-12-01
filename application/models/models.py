@@ -31,3 +31,4 @@ class CommunicationTemplate(db.Model):
     uri = db.Column(db.Text)
     classification = db.Column(JSONB)
     params = db.Column(JSONB)
+    schema = "templatesvc"
