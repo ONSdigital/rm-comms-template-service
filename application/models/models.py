@@ -36,7 +36,7 @@ class CommunicationTemplate(db.Model):
         return {
             "id": self.id,
             "label": self.label,
-            "type": self.type,
+            "type": CommunicationType(self.type).name,
             "uri": self.uri,
             "classification": self.classification,
             "params": self.params

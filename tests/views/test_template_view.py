@@ -47,7 +47,7 @@ class TestTemplateView(TestClient):
         # A 200 response and the correct data is received
         self.assertStatus(response, 200)
 
-        expected_response_json = dict(id=template_id, label="test data", type=0, uri="test-uri.com",
+        expected_response_json = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                                       classification={"GEOGRAPHY": "NI"}, params=None)
         self.assertEquals(response.json, expected_response_json)
 
