@@ -1,6 +1,6 @@
 from application.models.models import CommunicationTemplate
 from application.utils.session_wrapper import with_db_session
-from application.utils.exceptions import InvalidTemplateException
+from application.utils.exceptions import InvalidTemplateException, DatabaseError
 from application.models.schema import template_schema
 from jsonschema import validate, ValidationError
 from structlog import get_logger
@@ -19,7 +19,7 @@ def validate_template(template):
     try:
         validate(template, template_schema)
     except ValidationError as exception:
-        logger.info("Attempted to upload invalid template")
+        logger.exception("Attempted to upload invalid template")
         raise InvalidTemplateException('Template is invalid', status_code=400)
 
 
@@ -52,3 +52,11 @@ class TemplateController(object):
         logger.info("Uploaded template with id {}".format(template_id))
 
         return UPLOAD_SUCCESSFUL
+
+    @staticmethod
+    @with_db_session
+    def get_comms_template_by_id(template_id, session=None):
+        template = get_template_by_id(template_id, session)
+        if not template:
+            raise DatabaseError("Template with id {} doesn't exist".format(template_id), status_code=404)
+        return template.to_dict()

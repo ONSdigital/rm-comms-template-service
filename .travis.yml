@@ -9,8 +9,6 @@ before_install:
 install:
   - pip install pipenv
   - pipenv install --dev --deploy
-  - pipenv check
-  - pip install tox==2.7.0
 script:
   - pipenv run tox
 after_success:

@@ -1,24 +1,23 @@
-import enum
-
+from enum import IntEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.dialects.postgresql.json import JSONB
 from application.utils.database import db
 
 
-class CommunicationType(enum.Enum):
-    EMAIL = "EMAIL"
-    LETTER = "LETTER"
-    SMS = "SMS"
+class CommunicationType(IntEnum):
+    EMAIL = 0
+    LETTER = 1
+    SMS = 2
 
 
-class ClassificationType(enum.Enum):
-    LEGAL_STATUS = "LEGAL_STATUS"
-    INDUSTRY = "INDUSTRY"
-    GEOGRAPHY = "GEOGRAPHY"
-    COLLECTION_EXERCISE = "COLLECTION_EXERCISE"
-    RU_REF = "RU_REF"
-    SURVEY_REF = "SURVEY_REF"
-    ENROLMENT_STATUS = "ENROLMENT_STATUS"
+class ClassificationType(IntEnum):
+    LEGAL_STATUS = 0
+    INDUSTRY = 1
+    GEOGRAPHY = 2
+    COLLECTION_EXERCISE = 3
+    RU_REF = 4
+    SURVEY_REF = 5
+    ENROLMENT_STATUS = 6
 
 
 class CommunicationTemplate(db.Model):
@@ -32,3 +31,13 @@ class CommunicationTemplate(db.Model):
     classification = db.Column(JSONB)
     params = db.Column(JSONB)
     schema = "templatesvc"
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "label": self.label,
+            "type": self.type,
+            "uri": self.uri,
+            "classification": self.classification,
+            "params": self.params
+        }
