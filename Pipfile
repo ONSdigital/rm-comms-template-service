@@ -23,7 +23,6 @@ jsonschema = "==2.6.0"
 
 
 [dev-packages]
-
 tox = "*"
 nose = "*"
 coverage = "*"
