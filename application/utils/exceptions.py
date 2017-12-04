@@ -17,3 +17,7 @@ class InvalidTemplateException(CommsTemplateException):
 class DatabaseError(CommsTemplateException):
     """ Exception for handling interactions with the database"""
     pass
+
+
+class InvalidClassificationType(CommsTemplateException):
+    pass

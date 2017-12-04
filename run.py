@@ -11,6 +11,7 @@ def create_app(config_path):
     app.config.from_object(config_path)
 
     from application.models.models import CommunicationTemplate, ClassificationType, CommunicationType # NOQA  # pylint: disable=wrong-import-position
+    from application.models.classification_type import ClassificationType # NOQA  # pylint: disable=wrong-import-position
 
     # Set up database
     with app.app_context():
@@ -22,9 +23,11 @@ def create_app(config_path):
     # register view blueprints
     from application.views.info_view import info_view
     from application.views.template_view import template_view
+    from application.views.classification_type_view import classification_type_view
     from application import error_handlers
     app.register_blueprint(info_view)
     app.register_blueprint(template_view)
+    app.register_blueprint(classification_type_view)
     app.register_blueprint(error_handlers.blueprint)
 
     # Register request handlers
