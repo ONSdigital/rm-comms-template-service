@@ -9,6 +9,8 @@ from structlog import get_logger
 logger = get_logger()
 
 UPLOAD_SUCCESSFUL = 'The upload was successful'
+INVALID_TEMPLATE = 'Template is invalid'
+PREEXISTING_TEMPLATE = 'Id already exists'
 
 
 def get_template_by_id(template_id, session):
@@ -20,7 +22,7 @@ def validate_template(template):
         validate(template, template_schema)
     except ValidationError as exception:
         logger.exception("Attempted to upload invalid template")
-        raise InvalidTemplateException('Template is invalid', status_code=400)
+        raise InvalidTemplateException(INVALID_TEMPLATE, status_code=400)
 
 
 class TemplateController(object):
@@ -36,7 +38,7 @@ class TemplateController(object):
 
         if existing_template:
             logger.info("Attempted to upload already existing template, id {}".format(template_id))
-            raise InvalidTemplateException('Id already exists', status_code=400)
+            raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
 
         label = template_object.get('label')
         type = template_object.get('type')

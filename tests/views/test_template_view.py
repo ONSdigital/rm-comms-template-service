@@ -1,5 +1,4 @@
-from application.controllers.template_controller import UPLOAD_SUCCESSFUL
-from application.error_handlers import INVALID_TEMPLATE_MESSAGE
+from application.controllers.template_controller import UPLOAD_SUCCESSFUL, INVALID_TEMPLATE
 from tests.test_client import TestClient
 import json
 
@@ -33,7 +32,7 @@ class TestTemplateView(TestClient):
 
         # Then it is uploaded successfully with a 400 response
         self.assertStatus(response, 400)
-        self.assertEquals(response.json, {"error": INVALID_TEMPLATE_MESSAGE})
+        self.assertEquals(response.json, {"error": INVALID_TEMPLATE})
 
     def test_get_template_by_id(self):
         # Given there is a template in the database
@@ -51,3 +50,13 @@ class TestTemplateView(TestClient):
         expected_response_json = dict(id=template_id, label="test data", type=0, uri="test-uri.com",
                                       classification={"GEOGRAPHY": "NI"}, params=None)
         self.assertEquals(response.json, expected_response_json)
+
+    def test_get_non_existent_template(self):
+        # Given a template does not exist in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef79"
+
+        # When the template is searched by id
+        response = self.client.get('/template/{}'.format(template_id))
+
+        self.assertStatus(response, 404)
+        self.assertEquals(response.json, {"error": "Template with id {} doesn't exist".format(template_id)})

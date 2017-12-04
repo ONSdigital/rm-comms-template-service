@@ -1,5 +1,5 @@
 from application.controllers.template_controller import TemplateController, UPLOAD_SUCCESSFUL
-from application.utils.exceptions import InvalidTemplateException
+from application.utils.exceptions import InvalidTemplateException, DatabaseError
 from tests.test_client import TestClient
 
 
@@ -17,3 +17,9 @@ class TestTemplateController(TestClient):
         # When an object with the same id is uploaded
         with self.assertRaises(InvalidTemplateException):
             TemplateController.upload_comms_template(template_id, template_object)
+
+    def test_get_non_existing_template_raises_database_exception(self):
+        template_id = "db0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
+
+        with self.assertRaises(DatabaseError):
+            TemplateController.get_comms_template_by_id(template_id)
