@@ -42,7 +42,7 @@ class TestClassificationTypeView(TestClient):
         expected_response = [{"name": "LEGAL_BASIS"}, {"name": "GEOGRAPHY"}]
         self.assertEquals(response.json, expected_response)
 
-    def test_get_classification_types_if_none_in_dbd(self):
+    def test_get_classification_types_if_none_in_db(self):
         # Given there are no classification types in the database
         # When we get all the classification types
         response = self.client.get("/classificationtype")
@@ -63,7 +63,7 @@ class TestClassificationTypeView(TestClient):
         self.assertEquals(response.json, expected_response)
 
     def test_get_non_existent_classification_type(self):
-        # Given the classifciation type doesn't exist
+        # Given the classification type doesn't exist
         classification_type = "LEGAL_BASIS"
 
         # When we try to get the classification type

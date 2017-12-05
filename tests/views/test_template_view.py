@@ -60,3 +60,37 @@ class TestTemplateView(TestClient):
         response = self.client.get('/template/{}'.format(template_id))
 
         self.assertStatus(response, 404)
+
+        self.assertEquals(response.json, {"error": "Template with id {} doesn't exist".format(template_id)})
+
+    def test_update_template(self):
+        # Given there is a template in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+        data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
+                    classification={"GEOGRAPHY": "NI"})
+        self._insert_test_data(template_id, data)
+
+        # When i update the template
+        new_data = data.copy()
+        new_data["label"] = "new label"
+
+        response = self.client.put("/upload/{}".format(template_id), content_type='application/json',
+                                   data=json.dumps(new_data))
+
+        # Then i receive a 200 response
+        self.assertStatus(response, 200)
+        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)
+
+    def test_update_template_non_existent_template_creates_new(self):
+        # Given the template doesn't exist in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+        data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
+                    classification={"GEOGRAPHY": "NI"})
+
+        # When i update the template
+        response = self.client.put("/upload/{}".format(template_id), content_type='application/json',
+                                   data=json.dumps(data))
+
+        # Then i receive a 201 response
+        self.assertStatus(response, 201)
+        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)

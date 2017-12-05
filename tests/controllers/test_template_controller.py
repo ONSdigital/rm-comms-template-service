@@ -10,13 +10,30 @@ class TestTemplateController(TestClient):
         template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
                                uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
 
+        request_method = "POST"
         # Given the object already exists in the database
-        response = TemplateController.upload_comms_template(template_id, template_object)
-        self.assertEquals(response, UPLOAD_SUCCESSFUL)
+        msg, is_created = TemplateController.upload_comms_template(template_id, template_object, request_method)
+        self.assertEquals(msg, UPLOAD_SUCCESSFUL)
+        self.assertEquals(is_created, True)
 
-        # When an object with the same id is uploaded
+        # When a template with the same id is uploaded
         with self.assertRaises(InvalidTemplateException):
-            TemplateController.upload_comms_template(template_id, template_object)
+            TemplateController.upload_comms_template(template_id, template_object, request_method)
+
+    def test_update_non_existent_template_creates_new_template(self):
+        # given the template doesn't exist in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
+        template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
+                               uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
+
+        request_method = "PUT"
+
+        # When the template is updated
+        msg, is_created = TemplateController.upload_comms_template(template_id, template_object, request_method)
+
+        # We receive an upload successful message with a boolean is_created
+        self.assertEquals(msg, UPLOAD_SUCCESSFUL)
+        self.assertEquals(is_created, True)
 
     def test_get_non_existing_template(self):
         template_id = "db0711c3-0ac8-41d3-ae0e-567e5ea1ef91"

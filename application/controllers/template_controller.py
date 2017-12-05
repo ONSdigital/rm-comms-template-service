@@ -36,20 +36,7 @@ def validate_template(template):
 class TemplateController(object):
 
     @staticmethod
-    def upload_comms_template(template_id, template_object):
-        session = current_app.db.session()
-
-        logger.info('Uploading comms template with id {}.'.format(template_id))
-
-        validate_template(template_object)
-
-        existing_template = get_template_by_id(template_id, session)
-
-        if existing_template:
-            logger.info("Attempted to upload already existing template, id {}".format(template_id))
-            session.rollback()
-            raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
-
+    def _send_template_to_db(template_id, template_object, session):
         label = template_object.get('label')
         type = template_object.get('type')
         uri = template_object.get('uri')
@@ -59,16 +46,36 @@ class TemplateController(object):
         template = CommunicationTemplate(id=template_id, label=label, type=type, uri=uri, classification=classification,
                                          params=params)
 
-        session.add(template)
+        session.merge(template)
 
         logger.info("Uploaded template with id {}".format(template_id))
 
         return UPLOAD_SUCCESSFUL
 
     @staticmethod
+    def upload_comms_template(template_id, template_object, request_method):
+        session = current_app.db.session()
+        logger.info('Uploading comms template with id {}.'.format(template_id))
+
+        is_created = False
+
+        validate_template(template_object)
+        existing_template = get_template_by_id(template_id, session)
+
+        if existing_template and request_method == "POST":
+            logger.info("Attempted to upload already existing template, id {}".format(template_id))
+            raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
+
+        if not existing_template:
+            is_created = True
+
+        msg = TemplateController._send_template_to_db(template_id, template_object, session)
+
+        return msg, is_created
+
+    @staticmethod
     def get_comms_template_by_id(template_id):
         session = current_app.db.session()
-
         template = get_template_by_id(template_id, session)
 
         if not template:
