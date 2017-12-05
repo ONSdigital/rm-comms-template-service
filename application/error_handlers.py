@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
-from application.utils.exceptions import InvalidTemplateException, DatabaseError
-
 from structlog import get_logger
+
+from application.utils.exceptions import InvalidTemplateException, DatabaseError
 
 
 logger = get_logger()

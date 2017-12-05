@@ -1,8 +1,8 @@
 from functools import wraps
-
-from flask import current_app
-from application.utils.exceptions import DatabaseError, InvalidTemplateException
 from structlog import get_logger
+from flask import current_app
+
+from application.utils.exceptions import DatabaseError, InvalidTemplateException
 
 log = get_logger()
 

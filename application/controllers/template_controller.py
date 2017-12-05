@@ -1,20 +1,27 @@
+from jsonschema import validate, ValidationError
+from structlog import get_logger
+
+from sqlalchemy.exc import SQLAlchemyError
+
 from application.models.models import CommunicationTemplate
 from application.utils.session_wrapper import with_db_session
 from application.utils.exceptions import InvalidTemplateException, DatabaseError
 from application.models.schema import template_schema
-from jsonschema import validate, ValidationError
-from structlog import get_logger
 
 
 logger = get_logger()
 
 UPLOAD_SUCCESSFUL = 'The upload was successful'
-INVALID_TEMPLATE = 'Template is invalid'
-PREEXISTING_TEMPLATE = 'Id already exists'
+PREEXISTING_TEMPLATE = 'ID already exists'
 
 
 def get_template_by_id(template_id, session):
-    return session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
+    try:
+        template = session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
+    except SQLAlchemyError:
+        logger.exception("Unable to retrieve template with id: {}".format(template_id))
+        raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
+    return template
 
 
 def validate_template(template):
@@ -22,7 +29,7 @@ def validate_template(template):
         validate(template, template_schema)
     except ValidationError as exception:
         logger.exception("Attempted to upload invalid template")
-        raise InvalidTemplateException(INVALID_TEMPLATE, status_code=400)
+        raise InvalidTemplateException(exception.message, status_code=400)
 
 
 class TemplateController(object):
@@ -59,6 +66,8 @@ class TemplateController(object):
     @with_db_session
     def get_comms_template_by_id(template_id, session=None):
         template = get_template_by_id(template_id, session)
+
         if not template:
-            raise DatabaseError("Template with id {} doesn't exist".format(template_id), status_code=404)
-        return template.to_dict()
+            logger.info("Tried to GET non-existent template with id {}".format(template_id))
+
+        return template.to_dict() if template else template

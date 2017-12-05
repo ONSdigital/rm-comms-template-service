@@ -1,5 +1,6 @@
 
 class CommsTemplateException(Exception):
+    """ Base exception class allowing consistent formatting of error messages and http codes"""
 
     status_code = 500
 
@@ -9,8 +10,10 @@ class CommsTemplateException(Exception):
 
 
 class InvalidTemplateException(CommsTemplateException):
+    """ Exception for handling malformed or incorrect data"""
     pass
 
 
 class DatabaseError(CommsTemplateException):
+    """ Exception for handling interactions with the database"""
     pass
