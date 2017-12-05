@@ -25,7 +25,7 @@ class ClassificationTypeController(object):
             logger.info("Attempted to upload an already existing classification type: {}"
                         .format(classification_type))
             raise InvalidClassificationType("Attempted to upload an already existing classification type: {}"
-                        .format(classification_type), 400)
+                                            .format(classification_type), 400)
 
         classification = ClassificationType(name=classification_type)
 
@@ -38,6 +38,20 @@ class ClassificationTypeController(object):
     @staticmethod
     def get_classification_types():
         session = current_app.db.session()
+        classification = get_classification(classification_type, session)
+        if not classification:
+            logger.info("Attempted to retrieve a non existent classification type: {}".format(classification_type))
+            raise InvalidClassificationType("Attempted to retrieve a non existent classification type: {}"
+                                            .format(classification_type), status_code=404)
+        return classification.to_dict()
+
+    @staticmethod
+    def get_classification_types():
+        session = current_app.db.session()
         classification_types = session.query(ClassificationType).all()
+        if not classification_types:
+            logger.info("Attempted to retrieve classification types when none in database")
+            raise InvalidClassificationType("Attempted to retrieve classification types when none in database",
+                                            status_code=404)
         classification_types_dict = [classification.to_dict() for classification in classification_types]
         return classification_types_dict

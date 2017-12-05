@@ -10,9 +10,13 @@ def get_classification_types():
     return make_response(jsonify(classification_types), 200)
 
 
+@classification_type_view.route('/classificationtype/<classification_type>', methods=['GET'])
+def get_classification_type(classification_type):
+    classification = ClassificationTypeController.get_classification_type(classification_type)
+    return make_response(jsonify(classification), 200)
+
+
 @classification_type_view.route('/classificationtype/<classification_type>', methods=['POST'])
 def upload_classification_type(classification_type):
     msg = ClassificationTypeController.upload_classification_type(classification_type)
     return make_response(jsonify(msg), 201)
-
-
