@@ -1,15 +1,23 @@
 from flask import current_app
-from application.utils.session_wrapper import with_db_session
-from application.models.classification_type import ClassificationType
-from application.utils.exceptions import InvalidClassificationType
-from application.controllers.template_controller import UPLOAD_SUCCESSFUL
+
 from structlog import get_logger
+from sqlalchemy.exc import SQLAlchemyError
+
+from application.models.classification_type import ClassificationType
+from application.utils.exceptions import InvalidClassificationType, DatabaseError
+from application.controllers.template_controller import UPLOAD_SUCCESSFUL
 
 logger = get_logger()
 
 
 def get_classification(classification_type, session):
-    return session.query(ClassificationType).filter(ClassificationType.name == classification_type).first()
+    try:
+        classification = session.query(ClassificationType)\
+            .filter(ClassificationType.name == classification_type).first()
+    except SQLAlchemyError:
+        logger.exception("Unable to retrieve template with id: {}".format(classification_type))
+        raise DatabaseError("Unable to retrieve template with id: {}".format(classification_type), status_code=500)
+    return classification
 
 
 class ClassificationTypeController(object):
@@ -41,17 +49,18 @@ class ClassificationTypeController(object):
         classification = get_classification(classification_type, session)
         if not classification:
             logger.info("Attempted to retrieve a non existent classification type: {}".format(classification_type))
-            raise InvalidClassificationType("Attempted to retrieve a non existent classification type: {}"
-                                            .format(classification_type), status_code=404)
-        return classification.to_dict()
+
+        return classification.to_dict() if classification else classification
 
     @staticmethod
     def get_classification_types():
         session = current_app.db.session()
         classification_types = session.query(ClassificationType).all()
-        if not classification_types:
+
+        if classification_types:
+            classification_types_dict = [classification.to_dict() for classification in classification_types]
+        else:
             logger.info("Attempted to retrieve classification types when none in database")
-            raise InvalidClassificationType("Attempted to retrieve classification types when none in database",
-                                            status_code=404)
-        classification_types_dict = [classification.to_dict() for classification in classification_types]
+            classification_types_dict = None
+
         return classification_types_dict

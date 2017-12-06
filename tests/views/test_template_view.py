@@ -61,20 +61,20 @@ class TestTemplateView(TestClient):
 
         self.assertStatus(response, 404)
 
-        self.assertEquals(response.json, {"error": "Template with id {} doesn't exist".format(template_id)})
+        self.assertEquals(response.json, None)
 
     def test_update_template(self):
         # Given there is a template in the database
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                     classification={"GEOGRAPHY": "NI"})
-        self._insert_test_data(template_id, data)
+        self._upload_template(template_id, data)
 
         # When i update the template
         new_data = data.copy()
         new_data["label"] = "new label"
 
-        response = self.client.put("/upload/{}".format(template_id), content_type='application/json',
+        response = self.client.put("/template/{}".format(template_id), content_type='application/json',
                                    data=json.dumps(new_data))
 
         # Then i receive a 200 response
@@ -88,7 +88,7 @@ class TestTemplateView(TestClient):
                     classification={"GEOGRAPHY": "NI"})
 
         # When i update the template
-        response = self.client.put("/upload/{}".format(template_id), content_type='application/json',
+        response = self.client.put("/template/{}".format(template_id), content_type='application/json',
                                    data=json.dumps(data))
 
         # Then i receive a 201 response

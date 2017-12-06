@@ -18,7 +18,5 @@ def upload_template(template_id):
 @template_view.route('/template/<template_id>', methods=['GET'])
 def get_template_by_id(template_id):
     template = TemplateController.get_comms_template_by_id(template_id)
-
     http_code = 200 if template else 404
-
     return make_response(jsonify(template), http_code)
