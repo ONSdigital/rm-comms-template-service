@@ -44,7 +44,7 @@ class ClassificationTypeController(object):
         return UPLOAD_SUCCESSFUL
 
     @staticmethod
-    def get_classification_types():
+    def get_classification_type(classification_type):
         session = current_app.db.session()
         classification = get_classification(classification_type, session)
         if not classification:

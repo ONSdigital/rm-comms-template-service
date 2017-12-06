@@ -19,7 +19,6 @@ def get_template_by_id(template_id, session):
     try:
         template = session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
-        session.rollback()
         logger.exception("Unable to retrieve template with id: {}".format(template_id))
         raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
     return template
