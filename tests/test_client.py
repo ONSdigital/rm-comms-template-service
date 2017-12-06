@@ -1,5 +1,6 @@
 from flask_testing import TestCase
-from application.utils.session_wrapper import with_db_session
+from flask import current_app
+
 from application.models.models import CommunicationTemplate
 from run import create_app
 
@@ -11,8 +12,5 @@ class TestClient(TestCase):
         return create_app("tests.config.TestConfig")
 
     def tearDown(self):
-        self.cleardown_database()
-
-    @with_db_session
-    def cleardown_database(self, session):
+        session = current_app.db.session()
         session.query(CommunicationTemplate).delete()
