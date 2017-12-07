@@ -1,5 +1,7 @@
 *.pyc
 .idea/
 .tox/
-htmlcov/
 .coverage
+.cache/
+htmlcov/
+RM_Comms_Template.egg-info/

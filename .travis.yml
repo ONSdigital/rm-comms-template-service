@@ -1,6 +1,17 @@
+sudo: required
+services:
+  - docker
 language: python
 python:
   - "3.6"
+before_install:
+  - docker-compose down
+  - docker-compose --verbose build
+  - docker-compose up -d
 install:
-    - pip install pipenv
-    - pipenv install --dev
+  - pip install pipenv
+  - pipenv install --dev --deploy
+script:
+  - pipenv run tox
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

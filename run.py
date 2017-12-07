@@ -1,7 +1,7 @@
 from flask_cors import CORS
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from application.utils.logging import configure_structlogger
+from application.models.models import db
 
 
 def create_app(config_path):
@@ -9,17 +9,21 @@ def create_app(config_path):
     app = Flask(__name__)
     app.config.from_object(config_path)
 
-    # set up DB
-    app.db = SQLAlchemy(app)
-    # need to import models before initializing tables
-    from application.models.models import CommunicationTemplate, CommunicationType, ClassificationType
+    from application.models.models import CommunicationTemplate, ClassificationType, CommunicationType # NOQA  # pylint: disable=wrong-import-position
 
-    app.db.create_all()
+    # Set up database
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
+
+    app.db = db
 
     # register view blueprints
     from application.views.info_view import info_view
+    from application.views.template_view import template_view
     from application import error_handlers
     app.register_blueprint(info_view)
+    app.register_blueprint(template_view)
     app.register_blueprint(error_handlers.blueprint)
 
     CORS(app)
