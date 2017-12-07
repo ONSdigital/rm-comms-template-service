@@ -1,8 +1,7 @@
 import json
-from flask import current_app
 
 from tests.test_client import TestClient
-from application.controllers.template_controller import get_template_by_id, UPLOAD_SUCCESSFUL
+from application.controllers.template_controller import get_template_by_id_from_db
 
 
 class TestSessions(TestClient):
@@ -19,8 +18,7 @@ class TestSessions(TestClient):
         self.assertEquals(response.json, {"error": "'id' is a required property"})
 
         # Then it is not uploaded to the database
-        session = current_app.db.session()
-        template = get_template_by_id(template_id, session)
+        template = get_template_by_id_from_db(template_id)
 
         self.assertEquals(template, None)
 
@@ -32,11 +30,9 @@ class TestSessions(TestClient):
         response = self.client.post('/template/{}'.format(template_id), content_type='application/json',
                                     data=json.dumps(data))
         self.assertStatus(response, 201)
-        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)
 
         # Then it is persisted to the database
-        session = current_app.db.session()
-        template = get_template_by_id(template_id, session)
+        template = get_template_by_id_from_db(template_id)
 
         expected_data = data.copy()
         expected_data["params"] = None

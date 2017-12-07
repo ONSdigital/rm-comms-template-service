@@ -11,7 +11,6 @@ blueprint = Blueprint('error_handlers', __name__)
 
 @blueprint.app_errorhandler(InvalidTemplateException)
 def invalid_template_error(exception):
-    logger.exception(exception.error)
     response = jsonify({'error': exception.error})
     response.status_code = exception.status_code
     return response
@@ -19,7 +18,6 @@ def invalid_template_error(exception):
 
 @blueprint.app_errorhandler(DatabaseError)
 def database_error(exception):
-    logger.exception(exception.error)
     response = jsonify({'error': exception.error})
     response.status_code = exception.status_code
     return response
