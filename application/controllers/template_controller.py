@@ -19,7 +19,6 @@ def get_template_by_id(template_id, session):
     try:
         template = session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
-        session.rollback()
         logger.exception("Unable to retrieve template with id: {}".format(template_id))
         raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
     return template
@@ -47,7 +46,6 @@ class TemplateController(object):
 
         if existing_template:
             logger.info("Attempted to upload already existing template, id {}".format(template_id))
-            session.rollback()
             raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
 
         label = template_object.get('label')
