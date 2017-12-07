@@ -9,7 +9,7 @@ class TestSessions(TestClient):
     """ This test class is to check that the inbuilt flask and flask-sqlalchemy session management is working
     I.e does it rollback sessions on exception, is it committed """
 
-    def test_template_not_commited_on_exception(self):
+    def test_rollback_on_exception(self):
         # When an invalid comms template is uploaded
         data = dict(label="test data")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99"
@@ -24,7 +24,7 @@ class TestSessions(TestClient):
 
         self.assertEquals(template, None)
 
-    def test_template_commited_on_successful_post(self):
+    def test_commit_on_successful_request(self):
         # When a valid comms template is uploaded
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
