@@ -2,7 +2,6 @@ from flask_cors import CORS
 from flask import Flask
 from application.utils.logging import configure_structlogger
 from application.models.models import db
-from application.utils.request_handler import register_teardowns
 
 
 def create_app(config_path):
@@ -29,9 +28,6 @@ def create_app(config_path):
     app.register_blueprint(template_view)
     app.register_blueprint(classification_type_view)
     app.register_blueprint(error_handlers.blueprint)
-
-    # Register request handlers
-    register_teardowns(app)
 
     CORS(app)
     return app
