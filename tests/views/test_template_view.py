@@ -31,7 +31,7 @@ class TestTemplateView(TestClient):
         response = self.client.post('/template/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
                                     data=json.dumps(data))
 
-        # Then it is uploaded successfully with a 400 response
+        # Then we receive a 400 response with a validation message
         self.assertStatus(response, 400)
         self.assertEquals(response.json, {"error": "'id' is a required property"})
 
