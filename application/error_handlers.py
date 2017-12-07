@@ -25,7 +25,6 @@ def database_error(exception):
 
 @blueprint.app_errorhandler(InvalidClassificationType)
 def invalid_classification(exception):
-    logger.exception(exception.error)
     response = jsonify({'error': exception.error})
     response.status_code = exception.status_code
     return response

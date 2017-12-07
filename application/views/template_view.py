@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response, request, jsonify
+from flask import Blueprint, make_response, request, jsonify, Response
 from application.controllers import template_controller
 
 template_view = Blueprint('template_view', __name__)
@@ -12,7 +12,7 @@ def upload_template(template_id):
     is_created = template_controller.upload_comms_template(template_id, template, request_method)
     http_code = 201 if is_created else 200
 
-    return make_response('', http_code)
+    return Response(status=http_code)
 
 
 @template_view.route('/template/<template_id>', methods=['GET'])

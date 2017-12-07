@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response, jsonify
+from flask import Blueprint, make_response, jsonify, Response
 
 from application.controllers import classification_type_controller
 
@@ -21,5 +21,5 @@ def get_classification_type(classification_type):
 
 @classification_type_view.route('/classificationtype/<classification_type>', methods=['POST'])
 def upload_classification_type(classification_type):
-    msg = classification_type_controller.upload_classification_type(classification_type)
-    return make_response(jsonify(msg), 201)
+    classification_type_controller.upload_classification_type(classification_type)
+    return Response(status=201)
