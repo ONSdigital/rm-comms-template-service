@@ -1,5 +1,4 @@
 from tests.test_client import TestClient
-from application.controllers.template_controller import UPLOAD_SUCCESSFUL
 
 
 class TestClassificationTypeView(TestClient):
@@ -7,7 +6,6 @@ class TestClassificationTypeView(TestClient):
     def __upload_classification_type(self, classification_type):
         response = self.client.post('/classificationtype/{}'.format(classification_type))
         self.assertStatus(response, 201)
-        self.assertEquals(response.json, UPLOAD_SUCCESSFUL)
 
     def test_upload_classification_type(self):
         # when we upload a new classification type
@@ -16,7 +14,6 @@ class TestClassificationTypeView(TestClient):
 
         # Then the classification type is successfully uploaded to the database
         self.assertStatus(response, 201)
-        self.assertEquals(response.json, UPLOAD_SUCCESSFUL)
 
     def test_upload_existing_classification_type(self):
         # Given a ClassificationType exists in the database

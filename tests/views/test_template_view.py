@@ -1,6 +1,5 @@
 import json
 
-from application.controllers.template_controller import UPLOAD_SUCCESSFUL
 from tests.test_client import TestClient
 
 
@@ -10,9 +9,7 @@ class TestTemplateView(TestClient):
     def _upload_template(self, template_id, data):
         response = self.client.post('/template/{}'.format(template_id), content_type='application/json',
                                     data=json.dumps(data))
-
         self.assertStatus(response, 201)
-        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)
 
     def test_comms_template_upload(self):
         # When a valid comms template is uploaded
@@ -23,7 +20,6 @@ class TestTemplateView(TestClient):
 
         # Then it is uploaded successfully with a 201 response
         self.assertStatus(response, 201)
-        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)
 
     def test_invalid_comms_template_upload_(self):
         # When an invalid comms template is uploaded
@@ -31,7 +27,7 @@ class TestTemplateView(TestClient):
         response = self.client.post('/template/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
                                     data=json.dumps(data))
 
-        # Then it is uploaded successfully with a 400 response
+        # Then we receive a 400 response with a validation message
         self.assertStatus(response, 400)
         self.assertEquals(response.json, {"error": "'id' is a required property"})
 
@@ -60,7 +56,6 @@ class TestTemplateView(TestClient):
         response = self.client.get('/template/{}'.format(template_id))
 
         self.assertStatus(response, 404)
-
         self.assertEquals(response.json, None)
 
     def test_update_template(self):
@@ -79,7 +74,6 @@ class TestTemplateView(TestClient):
 
         # Then i receive a 200 response
         self.assertStatus(response, 200)
-        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)
 
     def test_update_template_non_existent_template_creates_new(self):
         # Given the template doesn't exist in the database
@@ -93,4 +87,3 @@ class TestTemplateView(TestClient):
 
         # Then i receive a 201 response
         self.assertStatus(response, 201)
-        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)

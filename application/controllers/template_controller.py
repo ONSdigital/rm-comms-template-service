@@ -1,23 +1,22 @@
-from jsonschema import validate, ValidationError
 from structlog import get_logger
 
 from sqlalchemy.exc import SQLAlchemyError
-from flask import current_app
+from jsonschema import validate, ValidationError
 
 from application.models.models import CommunicationTemplate
 from application.utils.exceptions import InvalidTemplateException, DatabaseError
 from application.models.schema import template_schema
+from application.utils.database import db
 
 
 logger = get_logger()
 
-UPLOAD_SUCCESSFUL = 'The upload was successful'
 PREEXISTING_TEMPLATE = 'ID already exists'
 
 
-def get_template_by_id(template_id, session):
+def get_template_by_id_from_db(template_id):
     try:
-        template = session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
+        template = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
         logger.exception("Unable to retrieve template with id: {}".format(template_id))
         raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
@@ -32,52 +31,44 @@ def validate_template(template):
         raise InvalidTemplateException(exception.message, status_code=400)
 
 
-class TemplateController(object):
+def send_template_to_db(template_id, template_object):
+    label = template_object.get('label')
+    type = template_object.get('type')
+    uri = template_object.get('uri')
+    classification = template_object.get('classification')
+    params = template_object.get('params')
 
-    @staticmethod
-    def _send_template_to_db(template_id, template_object, session):
-        label = template_object.get('label')
-        type = template_object.get('type')
-        uri = template_object.get('uri')
-        classification = template_object.get('classification')
-        params = template_object.get('params')
+    template = CommunicationTemplate(id=template_id, label=label, type=type, uri=uri, classification=classification,
+                                     params=params)
 
-        template = CommunicationTemplate(id=template_id, label=label, type=type, uri=uri, classification=classification,
-                                         params=params)
+    db.session.merge(template)
+    logger.info("Uploaded template with id {}".format(template_id))
 
-        session.merge(template)
 
-        logger.info("Uploaded template with id {}".format(template_id))
+def upload_comms_template(template_id, template_object, request_method):
+    logger.info('Uploading comms template with id {}.'.format(template_id))
 
-        return UPLOAD_SUCCESSFUL
+    is_created = False
 
-    @staticmethod
-    def upload_comms_template(template_id, template_object, request_method):
-        session = current_app.db.session()
-        logger.info('Uploading comms template with id {}.'.format(template_id))
+    validate_template(template_object)
+    existing_template = get_template_by_id_from_db(template_id)
 
-        is_created = False
+    if existing_template and request_method == "POST":
+        logger.info("Attempted to upload already existing template, id {}".format(template_id))
+        raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
 
-        validate_template(template_object)
-        existing_template = get_template_by_id(template_id, session)
+    if not existing_template:
+        is_created = True
 
-        if existing_template and request_method == "POST":
-            logger.info("Attempted to upload already existing template, id {}".format(template_id))
-            raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
+    send_template_to_db(template_id, template_object)
 
-        if not existing_template:
-            is_created = True
+    return is_created
 
-        msg = TemplateController._send_template_to_db(template_id, template_object, session)
 
-        return msg, is_created
+def get_comms_template_by_id(template_id):
+    template = get_template_by_id_from_db(template_id)
 
-    @staticmethod
-    def get_comms_template_by_id(template_id):
-        session = current_app.db.session()
-        template = get_template_by_id(template_id, session)
+    if not template:
+        logger.info("Tried to GET non-existent template with id {}".format(template_id))
 
-        if not template:
-            logger.info("Tried to GET non-existent template with id {}".format(template_id))
-
-        return template.to_dict() if template else template
+    return template.to_dict() if template else template
