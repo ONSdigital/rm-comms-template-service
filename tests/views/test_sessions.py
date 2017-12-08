@@ -1,7 +1,7 @@
 import json
 
 from tests.test_client import TestClient
-from application.controllers.template_controller import get_template_by_id_from_db
+from application.controllers.template_controller import get_template_by_id
 
 
 class TestSessions(TestClient):
@@ -18,7 +18,7 @@ class TestSessions(TestClient):
         self.assertEquals(response.json, {"error": "'id' is a required property"})
 
         # Then it is not uploaded to the database
-        template = get_template_by_id_from_db(template_id)
+        template = get_template_by_id(template_id)
 
         self.assertEquals(template, None)
 
@@ -32,7 +32,7 @@ class TestSessions(TestClient):
         self.assertStatus(response, 201)
 
         # Then it is persisted to the database
-        template = get_template_by_id_from_db(template_id)
+        template = get_template_by_id(template_id)
 
         expected_data = data.copy()
         expected_data["params"] = None

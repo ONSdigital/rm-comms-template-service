@@ -14,11 +14,11 @@ logger = get_logger()
 PREEXISTING_TEMPLATE = 'ID already exists'
 
 
-def get_template_by_id_from_db(template_id):
+def get_template_by_id(template_id):
     try:
         template = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
-        logger.exception("Unable to retrieve template with id: {}".format(template_id))
+        logger.exception("Unable to retrieve template with id", id=template_id)
         raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
     return template
 
@@ -33,14 +33,14 @@ def validate_template(template):
 
 def upload_comms_template(template_id, template_object):
 
-    logger.info('Uploading comms template with id {}.'.format(template_id))
+    logger.info("Uploading comms template with id", id=template_id)
 
     validate_template(template_object)
 
-    existing_template = get_template_by_id_from_db(template_id)
+    existing_template = get_template_by_id(template_id)
 
     if existing_template:
-        logger.info("Attempted to upload already existing template, id {}".format(template_id))
+        logger.info("Attempted to upload already existing template", id=template_id)
         raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
 
     label = template_object.get('label')
@@ -54,11 +54,11 @@ def upload_comms_template(template_id, template_object):
 
     db.session.add(template)
 
-    logger.info("Uploaded template with id {}".format(template_id))
+    logger.info("Uploaded template", id=template_id)
 
 
 def get_comms_template_by_id(template_id):
-    template = get_template_by_id_from_db(template_id)
+    template = get_template_by_id(template_id)
     if not template:
-        logger.info("Tried to GET non-existent template with id {}".format(template_id))
+        logger.info("Tried to GET non-existent template with id", id=template_id)
     return template.to_dict() if template else template
