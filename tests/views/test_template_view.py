@@ -56,3 +56,26 @@ class TestTemplateView(TestClient):
         response = self.client.get('/template/{}'.format(template_id))
 
         self.assertStatus(response, 404)
+
+    def test_delete_template(self):
+        # Given there is a template in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+        data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
+                    classification={"GEOGRAPHY": "NI"})
+        self._upload_template(template_id, data)
+
+        # When the template is deleted by id
+        response = self.client.delete('/template/{}'.format(template_id))
+
+        # Then we receive a 200 OK response
+        self.assertStatus(response, 200)
+
+    def test_delete_non_existent_template(self):
+        # Given the template doesn't exist in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+
+        # When the template is deleted by id
+        response = self.client.delete('/template/{}'.format(template_id))
+
+        # Then we receive a 404 Not Found response
+        self.assertStatus(response, 404)
