@@ -1,3 +1,4 @@
+import json
 from jsonschema import validate, ValidationError
 from structlog import get_logger
 
@@ -21,6 +22,17 @@ def get_template_by_id(template_id):
         logger.exception("Unable to retrieve template with id", id=template_id)
         raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
     return template
+
+
+def get_templates_by_classifiers(classifiers):
+    try:
+        templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.classification == classifiers)\
+            .all()
+    except SQLAlchemyError:
+        logger.exception("Unable to retrieve template with classifiers", classifiers=classifiers)
+        raise DatabaseError("Unable to retrieve template with classifiers:  {}".format(json.dumps(classifiers)),
+                            status_code=500)
+    return templates
 
 
 def validate_template(template):
@@ -62,3 +74,14 @@ def get_comms_template_by_id(template_id):
     if not template:
         logger.info("Tried to GET non-existent template with id", id=template_id)
     return template.to_dict() if template else template
+
+
+def get_comms_templates_by_classifiers(classifiers):
+    templates = get_templates_by_classifiers(classifiers)
+    if templates:
+        template_list = [template.to_dict() for template in templates]
+    else:
+        logger.info("Couldn't find template with classifiers", classifiers=classifiers)
+        template_list = None
+
+    return template_list
