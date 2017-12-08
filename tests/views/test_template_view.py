@@ -1,6 +1,5 @@
 import json
 
-from application.controllers.template_controller import UPLOAD_SUCCESSFUL
 from tests.test_client import TestClient
 
 
@@ -10,9 +9,7 @@ class TestTemplateView(TestClient):
     def _upload_template(self, template_id, data):
         response = self.client.post('/template/{}'.format(template_id), content_type='application/json',
                                     data=json.dumps(data))
-
         self.assertStatus(response, 201)
-        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)
 
     def test_comms_template_upload(self):
         # When a valid comms template is uploaded
@@ -23,7 +20,6 @@ class TestTemplateView(TestClient):
 
         # Then it is uploaded successfully with a 201 response
         self.assertStatus(response, 201)
-        self.assertEquals(response.data.decode(), UPLOAD_SUCCESSFUL)
 
     def test_invalid_comms_template_upload_(self):
         # When an invalid comms template is uploaded
