@@ -1,7 +1,10 @@
 from structlog import get_logger
 
 from sqlalchemy.exc import SQLAlchemyError
+<<<<<<< HEAD
 from jsonschema import validate, ValidationError
+=======
+>>>>>>> master
 
 from application.models.models import CommunicationTemplate
 from application.utils.exceptions import InvalidTemplateException, DatabaseError
