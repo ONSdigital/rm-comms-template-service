@@ -29,9 +29,9 @@ def get_templates_by_classifiers(classifiers):
         templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.classification == classifiers)\
             .all()
     except SQLAlchemyError:
-        logger.exception("Unable to retrieve template with classifiers", classifiers=classifiers)
-        raise DatabaseError("Unable to retrieve template with classifiers:  {}".format(json.dumps(classifiers)),
-                            status_code=500)
+        logger.exception('Unable to retrieve template with classifiers', classifiers=classifiers)
+        classifiers_json = json.dumps(classifiers)
+        raise DatabaseError('Unable to retrieve template with classifiers: {}'.format(classifiers_json), status_code=500)
     return templates
 
 
