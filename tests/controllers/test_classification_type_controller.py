@@ -8,11 +8,11 @@ class TestClassificationTypeController(TestClient):
     def test_upload_existing_classification_type_raises_invalid_classification_type_exception(self):
         # Given the object already exists in the database
         classification_type = "GEOGRAPHY"
-        classification_type_controller.upload_classification_type(classification_type)
+        classification_type_controller.create_classification_type(classification_type)
 
         # When a template with the same id is uploaded
         with self.assertRaises(InvalidClassificationType):
-            classification_type_controller.upload_classification_type(classification_type)
+            classification_type_controller.create_classification_type(classification_type)
 
     def test_get_non_existing_classification_type(self):
         # Given the classification type is not in the database

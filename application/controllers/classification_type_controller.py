@@ -7,7 +7,7 @@ from application.utils.database import db
 logger = get_logger()
 
 
-def get_classification(classification_type):
+def _get_classification(classification_type):
     try:
         classification = db.session.query(ClassificationType)\
             .filter(ClassificationType.name == classification_type).first()
@@ -18,16 +18,16 @@ def get_classification(classification_type):
     return classification
 
 
-def upload_classification_type(classification_type):
+def create_classification_type(classification_type):
     logger.info('Uploading classification type: {}'.format(classification_type))
 
-    existing_classification_type = get_classification(classification_type)
+    existing_classification_type = _get_classification(classification_type)
 
     if existing_classification_type:
         logger.info("Attempted to upload an already existing classification type",
                     classification_type=classification_type)
         raise InvalidClassificationType("Attempted to upload an already existing classification type: {}"
-                                        .format(classification_type), 400)
+                                        .format(classification_type), 409)
 
     classification = ClassificationType(name=classification_type)
 
@@ -37,7 +37,7 @@ def upload_classification_type(classification_type):
 
 
 def get_classification_type(classification_type):
-    classification = get_classification(classification_type)
+    classification = _get_classification(classification_type)
     if not classification:
         logger.info("Attempted to retrieve a non existent classification type",
                     classification_type=classification_type)

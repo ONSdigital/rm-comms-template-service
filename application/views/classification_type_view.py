@@ -21,5 +21,5 @@ def get_classification_type(classification_type):
 
 @classification_type_view.route('/classificationtype/<classification_type>', methods=['POST'])
 def upload_classification_type(classification_type):
-    classification_type_controller.upload_classification_type(classification_type)
+    classification_type_controller.create_classification_type(classification_type)
     return Response(status=201)

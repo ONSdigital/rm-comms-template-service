@@ -4,14 +4,16 @@ from application.controllers import template_controller
 template_view = Blueprint('template_view', __name__)
 
 
-@template_view.route('/template/<template_id>', methods=['POST', 'PUT'])
+@template_view.route('/template/<template_id>', methods=['POST'])
 def upload_template(template_id):
-    template = request.get_json()
-    request_method = request.method
+    template_controller.create_comms_template(template_id, template=request.get_json())
+    return Response(status=201)
 
-    is_created = template_controller.upload_comms_template(template_id, template, request_method)
+
+@template_view.route('/template/<template_id>', methods=['PUT'])
+def update_template(template_id):
+    is_created = template_controller.update_comms_template(template_id, template=request.get_json())
     http_code = 201 if is_created else 200
-
     return Response(status=http_code)
 
 

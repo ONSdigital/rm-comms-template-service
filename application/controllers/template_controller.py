@@ -14,7 +14,7 @@ logger = get_logger()
 PREEXISTING_TEMPLATE = 'ID already exists'
 
 
-def get_template_by_id(template_id):
+def _get_template_by_id(template_id):
     try:
         template = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
@@ -23,7 +23,7 @@ def get_template_by_id(template_id):
     return template
 
 
-def validate_template(template):
+def _validate_template(template):
     try:
         validate(template, template_schema)
     except ValidationError as exception:
@@ -31,7 +31,7 @@ def validate_template(template):
         raise InvalidTemplateException(exception.message, status_code=400)
 
 
-def send_template_to_db(template_id, template_object):
+def _create_or_update_template(template_id, template_object):
     label = template_object.get('label')
     type = template_object.get('type')
     uri = template_object.get('uri')
@@ -45,28 +45,35 @@ def send_template_to_db(template_id, template_object):
     logger.info("Uploaded template", id=template_id)
 
 
-def upload_comms_template(template_id, template_object, request_method):
-    logger.info('Uploading comms template with id {}.'.format(template_id))
+def create_comms_template(template_id, template=None):
+    logger.info('Creating template', id=template_id)
 
-    is_created = False
+    _validate_template(template)
+    existing_template = _get_template_by_id(template_id)
 
-    validate_template(template_object)
-    existing_template = get_template_by_id(template_id)
+    if existing_template:
+        logger.info("Attempted to create an already existing template", id=template_id)
+        raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=409)
 
-    if existing_template and request_method == "POST":
-        logger.info("Attempted to upload already existing template", id=template_id)
-        raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
+    _create_or_update_template(template_id, template)
 
-    if not existing_template:
-        is_created = True
 
-    send_template_to_db(template_id, template_object)
+def update_comms_template(template_id, template=None):
+    logger.info('Updating template', id=template_id)
+    is_created = True
 
+    _validate_template(template)
+    existing_template = _get_template_by_id(template_id)
+
+    if existing_template:
+        is_created = False
+
+    _create_or_update_template(template_id, template)
     return is_created
 
 
 def get_comms_template_by_id(template_id):
-    template = get_template_by_id(template_id)
+    template = _get_template_by_id(template_id)
 
     if not template:
         logger.info("Tried to GET non-existent template", id=template_id)
