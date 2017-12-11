@@ -38,20 +38,18 @@ def create_classification_type(classification_type):
 
 def get_classification_type(classification_type):
     classification = _get_classification(classification_type)
-    if not classification:
-        logger.info("Attempted to retrieve a non existent classification type",
-                    classification_type=classification_type)
 
-    return classification.to_dict() if classification else classification
+    if classification:
+        return classification.to_dict()
+
+    logger.info("Attempted to retrieve a non existent classification type",
+                classification_type=classification_type)
 
 
 def get_classification_types():
     classification_types = db.session.query(ClassificationType).all()
 
     if classification_types:
-        classification_types_dict = [classification.to_dict() for classification in classification_types]
-    else:
-        logger.info("Attempted to retrieve classification types when none in database")
-        classification_types_dict = None
+        return [classification.to_dict() for classification in classification_types]
 
-    return classification_types_dict
+    logger.info("Attempted to retrieve classification types when none in database")
