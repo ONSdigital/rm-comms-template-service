@@ -79,3 +79,26 @@ def get_comms_template_by_id(template_id):
         logger.info("Tried to GET non-existent template", id=template_id)
 
     return template.to_dict() if template else template
+
+
+def delete_comms_template(template_id):
+    deleted_templates = delete_template(template_id)
+    if deleted_templates >= 1:
+        is_deleted = True
+        logger.info("Deleted template with id", id=template_id)
+    else:
+        is_deleted = False
+        logger.info("Attempted to delete non-existent template", id=template_id)
+
+    return is_deleted
+
+
+def delete_template(template_id):
+    try:
+        deleted_templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id)\
+            .delete()
+    except SQLAlchemyError:
+        logger.exception("Unable to delete template", id=template_id)
+        raise DatabaseError("Exception thrown while trying to delete template with id {}".format(template_id),
+                            status_code=500)
+    return deleted_templates

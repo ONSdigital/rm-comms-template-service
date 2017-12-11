@@ -35,3 +35,16 @@ class TestTemplateController(TestClient):
         template = template_controller.get_comms_template_by_id(template_id)
 
         self.assertEquals(template, None)
+
+    def test_delete_template(self):
+        # Given the template exists in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
+        template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
+                               uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
+
+        template_controller.create_comms_template(template_id, template_object)
+
+        # When the template is deleted
+        number_of_deleted_templates = template_controller.delete_comms_template(template_id)
+
+        self.assertEquals(number_of_deleted_templates, 1)
