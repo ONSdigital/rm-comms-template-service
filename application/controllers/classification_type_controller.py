@@ -12,9 +12,8 @@ def _get_classification(classification_type):
         classification = db.session.query(ClassificationType)\
             .filter(ClassificationType.name == classification_type).first()
     except SQLAlchemyError:
-        logger.exception("Unable to retrieve classification type", classification_type=classification_type)
-        raise DatabaseError("Unable to retrieve classification type with id: {}".format(classification_type),
-                            status_code=500)
+        logger.exception('Unable to retrieve classification type', classification_type=classification_type)
+        raise DatabaseError(f'Unable to retrieve classification type with id: {classification_type}', status_code=500)
     return classification
 
 
@@ -26,8 +25,8 @@ def create_classification_type(classification_type):
     if existing_classification_type:
         logger.info("Attempted to upload an already existing classification type",
                     classification_type=classification_type)
-        raise InvalidClassificationType("Attempted to upload an already existing classification type: {}"
-                                        .format(classification_type), 409)
+        raise InvalidClassificationType(
+            f'Attempted to upload an already existing classification type: {classification_type}', 409)
 
     classification = ClassificationType(name=classification_type)
 

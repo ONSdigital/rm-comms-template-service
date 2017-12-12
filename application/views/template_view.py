@@ -26,8 +26,7 @@ def get_template_by_id(template_id):
 
 @template_view.route('/template', methods=['GET'])
 def get_templates_by_classifiers():
-    classifiers = request.args
-    templates = template_controller.get_comms_templates_by_classifiers(classifiers)
+    templates = template_controller.get_comms_templates_by_classifiers(classifiers=request.args)
     http_code = 200 if templates else 404
     return make_response(jsonify(templates), http_code)
 

@@ -47,7 +47,7 @@ class TestTemplateController(TestClient):
         template_controller.create_comms_template(template_id, template_object)
 
         # When we search for a template by classifiers we retrieve the matching template
-        template_list = template_controller.get_comms_templates_by_classifiers(classifiers)
+        template_list = template_controller.get_comms_templates_by_classifiers(classifiers=classifiers)
 
         expected_response = template_object.copy()
         expected_response["params"] = None
@@ -55,11 +55,10 @@ class TestTemplateController(TestClient):
         self.assertEquals(template_list, [expected_response])
 
     def test_get_non_existent_template_by_classifier(self):
-        # given the template doesnt exist in the database
-        classifiers = {"GEOGRAPHY": "NI"}
+        # Given the template doesnt exist in the database
 
         # When we search for a template by classifiers we retrieve the matching template
-        template_list = template_controller.get_comms_templates_by_classifiers(classifiers)
+        template_list = template_controller.get_comms_templates_by_classifiers(classifiers={"GEOGRAPHY": "NI"})
 
         self.assertEquals(template_list, None)
 

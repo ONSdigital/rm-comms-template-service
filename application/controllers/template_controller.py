@@ -19,8 +19,8 @@ def _get_template_by_id(template_id):
     try:
         template = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
-        logger.exception("Unable to retrieve template", id=template_id)
-        raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
+        logger.exception('Unable to retrieve template', id=template_id)
+        raise DatabaseError(f'Unable to retrieve template with id: {template_id}', status_code=500)
     return template
 
 
@@ -30,9 +30,7 @@ def get_templates_by_classifiers(classifiers):
             .all()
     except SQLAlchemyError:
         logger.exception('Unable to retrieve template with classifiers', classifiers=classifiers)
-        classifiers_json = json.dumps(classifiers)
-        raise DatabaseError('Unable to retrieve template with classifiers: {}'.format(classifiers_json),
-                            status_code=500)
+        raise DatabaseError(f'Unable to retrieve template with classifiers: {json.dumps(classifiers)}', status_code=500)
     return templates
 
 
@@ -40,7 +38,7 @@ def _validate_template(template):
     try:
         validate(template, template_schema)
     except ValidationError as exception:
-        logger.exception("Attempted to upload invalid template")
+        logger.exception('Attempted to upload invalid template')
         raise InvalidTemplateException(exception.message, status_code=400)
 
 
@@ -65,7 +63,7 @@ def create_comms_template(template_id, template=None):
     existing_template = _get_template_by_id(template_id)
 
     if existing_template:
-        logger.info("Attempted to create an already existing template", id=template_id)
+        logger.info('Attempted to create an already existing template', id=template_id)
         raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=409)
 
     _create_or_update_template(template_id, template)
@@ -89,30 +87,28 @@ def get_comms_template_by_id(template_id):
     template = _get_template_by_id(template_id)
 
     if not template:
-        logger.info("Tried to GET non-existent template", id=template_id)
+        logger.info('Tried to GET non-existent template', id=template_id)
 
     return template.to_dict() if template else template
 
 
-def get_comms_templates_by_classifiers(classifiers):
+def get_comms_templates_by_classifiers(classifiers=None):
     templates = get_templates_by_classifiers(classifiers)
-    if templates:
-        template_list = [template.to_dict() for template in templates]
-    else:
-        logger.info("Couldn't find template with classifiers", classifiers=classifiers)
-        template_list = None
 
-    return template_list
+    if templates:
+        return [template.to_dict() for template in templates]
+
+    logger.info('Could not find template with classifiers', classifiers=classifiers)
 
 
 def delete_comms_template(template_id):
     deleted_templates = _delete_template(template_id)
     if deleted_templates >= 1:
         is_deleted = True
-        logger.info("Deleted template with id", id=template_id)
+        logger.info('Deleted template with id', id=template_id)
     else:
         is_deleted = False
-        logger.info("Attempted to delete non-existent template", id=template_id)
+        logger.info('Attempted to delete non-existent template', id=template_id)
 
     return is_deleted
 
@@ -122,7 +118,6 @@ def _delete_template(template_id):
         deleted_templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id)\
             .delete()
     except SQLAlchemyError:
-        logger.exception("Unable to delete template", id=template_id)
-        raise DatabaseError("Exception thrown while trying to delete template with id {}".format(template_id),
-                            status_code=500)
+        logger.exception('Unable to delete template', id=template_id)
+        raise DatabaseError(f'Exception thrown while trying to delete template with id {template_id}', status_code=500)
     return deleted_templates
