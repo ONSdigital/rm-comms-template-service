@@ -3,7 +3,7 @@ from tests.test_client import TestClient
 
 class TestClassificationTypeView(TestClient):
 
-    def _upload_classification_type(self, classification_type):
+    def _create_classification_type(self, classification_type):
         response = self.client.post('/classificationtype/{}'.format(classification_type))
         self.assertStatus(response, 201)
 
@@ -18,7 +18,7 @@ class TestClassificationTypeView(TestClient):
     def test_upload_existing_classification_type(self):
         # Given a ClassificationType exists in the database
         classification_type = "LEGAL_BASIS"
-        self._upload_classification_type(classification_type)
+        self._create_classification_type(classification_type)
 
         # When the same classification type is uploaded
         response = self.client.post('/classificationtype/{}'.format(classification_type))
@@ -28,8 +28,8 @@ class TestClassificationTypeView(TestClient):
 
     def test_get_classification_types(self):
         # Given there are existing classification types in the database
-        self._upload_classification_type("LEGAL_BASIS")
-        self._upload_classification_type("GEOGRAPHY")
+        self._create_classification_type("LEGAL_BASIS")
+        self._create_classification_type("GEOGRAPHY")
 
         # When we get all the classification types
         response = self.client.get("/classificationtype")
@@ -49,7 +49,7 @@ class TestClassificationTypeView(TestClient):
     def test_get_classification_type(self):
         # Given there is an existing classification type in the database
         classification_type = "LEGAL_BASIS"
-        self._upload_classification_type(classification_type)
+        self._create_classification_type(classification_type)
 
         # When we get the classification type
         response = self.client.get("/classificationtype/{}".format(classification_type))

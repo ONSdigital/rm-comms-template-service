@@ -24,6 +24,13 @@ def get_template_by_id(template_id):
     return make_response(jsonify(template), http_code)
 
 
+@template_view.route('/template', methods=['GET'])
+def get_templates_by_classifiers():
+    templates = template_controller.get_comms_templates_by_classifiers(classifiers=request.args)
+    http_code = 200 if templates else 404
+    return make_response(jsonify(templates), http_code)
+
+
 @template_view.route('/template/<template_id>', methods=['DELETE'])
 def delete_template(template_id):
     is_deleted = template_controller.delete_comms_template(template_id)
