@@ -52,3 +52,26 @@ def get_classification_types():
         return [classification.to_dict() for classification in classification_types]
 
     logger.info("Attempted to retrieve classification types when none in database")
+
+
+def _delete_classification_type(classification_type):
+    try:
+        deleted_classification_types = db.session.query(ClassificationType).filter(ClassificationType.name ==
+                                                                                   classification_type).delete()
+    except SQLAlchemyError:
+        logger.exception("Unable to delete classification type", classification_type=classification_type)
+        raise DatabaseError(f'Exception thrown while trying to delete classification type {classification_type}',
+                            status_code=500)
+    return deleted_classification_types
+
+
+def delete_classification_type(classification_type):
+    deleted_classification_types = _delete_classification_type(classification_type)
+    if deleted_classification_types >= 1:
+        is_deleted = True
+        logger.info("Deleted classification type", classification_type=classification_type)
+    else:
+        is_deleted = False
+        logger.info("Attempted to delete non-existent classification type", classification_type=classification_type)
+
+    return is_deleted

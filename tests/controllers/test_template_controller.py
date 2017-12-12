@@ -74,3 +74,4 @@ class TestTemplateController(TestClient):
         number_of_deleted_templates = template_controller.delete_comms_template(template_id)
 
         self.assertEquals(number_of_deleted_templates, 1)
+

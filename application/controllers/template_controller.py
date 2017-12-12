@@ -86,10 +86,10 @@ def update_comms_template(template_id, template=None):
 def get_comms_template_by_id(template_id):
     template = _get_template_by_id(template_id)
 
-    if not template:
-        logger.info('Tried to GET non-existent template', id=template_id)
+    if template:
+        return template.to_dict()
 
-    return template.to_dict() if template else template
+    logger.info('Tried to GET non-existent template', id=template_id)
 
 
 def get_comms_templates_by_classifiers(classifiers=None):

@@ -23,3 +23,10 @@ def get_classification_type(classification_type):
 def upload_classification_type(classification_type):
     classification_type_controller.create_classification_type(classification_type)
     return Response(status=201)
+
+
+@classification_type_view.route('/classificationtype/<classification_type>', methods=['DELETE'])
+def delete_classification_type(classification_type):
+    is_deleted = classification_type_controller.delete_classification_type(classification_type)
+    http_code = 200 if is_deleted else 404
+    return Response(status=http_code)
