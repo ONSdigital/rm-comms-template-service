@@ -1,8 +1,8 @@
 import json
-from jsonschema import validate, ValidationError
 from structlog import get_logger
 
 from sqlalchemy.exc import SQLAlchemyError
+from jsonschema import validate, ValidationError
 
 from application.models.models import CommunicationTemplate
 from application.utils.exceptions import InvalidTemplateException, DatabaseError
@@ -15,11 +15,11 @@ logger = get_logger()
 PREEXISTING_TEMPLATE = 'ID already exists'
 
 
-def get_template_by_id(template_id):
+def _get_template_by_id(template_id):
     try:
         template = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
-        logger.exception("Unable to retrieve template with id", id=template_id)
+        logger.exception("Unable to retrieve template", id=template_id)
         raise DatabaseError("Unable to retrieve template with id: {}".format(template_id), status_code=500)
     return template
 
@@ -31,11 +31,12 @@ def get_templates_by_classifiers(classifiers):
     except SQLAlchemyError:
         logger.exception('Unable to retrieve template with classifiers', classifiers=classifiers)
         classifiers_json = json.dumps(classifiers)
-        raise DatabaseError('Unable to retrieve template with classifiers: {}'.format(classifiers_json), status_code=500)
+        raise DatabaseError('Unable to retrieve template with classifiers: {}'.format(classifiers_json),
+                            status_code=500)
     return templates
 
 
-def validate_template(template):
+def _validate_template(template):
     try:
         validate(template, template_schema)
     except ValidationError as exception:
@@ -43,18 +44,7 @@ def validate_template(template):
         raise InvalidTemplateException(exception.message, status_code=400)
 
 
-def upload_comms_template(template_id, template_object):
-
-    logger.info("Uploading comms template with id", id=template_id)
-
-    validate_template(template_object)
-
-    existing_template = get_template_by_id(template_id)
-
-    if existing_template:
-        logger.info("Attempted to upload already existing template", id=template_id)
-        raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=400)
-
+def _create_or_update_template(template_id, template_object):
     label = template_object.get('label')
     type = template_object.get('type')
     uri = template_object.get('uri')
@@ -64,15 +54,43 @@ def upload_comms_template(template_id, template_object):
     template = CommunicationTemplate(id=template_id, label=label, type=type, uri=uri, classification=classification,
                                      params=params)
 
-    db.session.add(template)
-
+    db.session.merge(template)
     logger.info("Uploaded template", id=template_id)
 
 
+def create_comms_template(template_id, template=None):
+    logger.info('Creating template', id=template_id)
+
+    _validate_template(template)
+    existing_template = _get_template_by_id(template_id)
+
+    if existing_template:
+        logger.info("Attempted to create an already existing template", id=template_id)
+        raise InvalidTemplateException(PREEXISTING_TEMPLATE, status_code=409)
+
+    _create_or_update_template(template_id, template)
+
+
+def update_comms_template(template_id, template=None):
+    logger.info('Updating template', id=template_id)
+    is_created = True
+
+    _validate_template(template)
+    existing_template = _get_template_by_id(template_id)
+
+    if existing_template:
+        is_created = False
+
+    _create_or_update_template(template_id, template)
+    return is_created
+
+
 def get_comms_template_by_id(template_id):
-    template = get_template_by_id(template_id)
+    template = _get_template_by_id(template_id)
+
     if not template:
-        logger.info("Tried to GET non-existent template with id", id=template_id)
+        logger.info("Tried to GET non-existent template", id=template_id)
+
     return template.to_dict() if template else template
 
 
@@ -85,3 +103,26 @@ def get_comms_templates_by_classifiers(classifiers):
         template_list = None
 
     return template_list
+
+
+def delete_comms_template(template_id):
+    deleted_templates = _delete_template(template_id)
+    if deleted_templates >= 1:
+        is_deleted = True
+        logger.info("Deleted template with id", id=template_id)
+    else:
+        is_deleted = False
+        logger.info("Attempted to delete non-existent template", id=template_id)
+
+    return is_deleted
+
+
+def _delete_template(template_id):
+    try:
+        deleted_templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id)\
+            .delete()
+    except SQLAlchemyError:
+        logger.exception("Unable to delete template", id=template_id)
+        raise DatabaseError("Exception thrown while trying to delete template with id {}".format(template_id),
+                            status_code=500)
+    return deleted_templates

@@ -5,17 +5,29 @@ from tests.test_client import TestClient
 
 class TestTemplateController(TestClient):
 
-    def test_upload_existing_template_raises_invalid_template_exception(self):
+    def test_create_existing_template_raises_invalid_template_exception(self):
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
         template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
                                uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
 
         # Given the object already exists in the database
-        template_controller.upload_comms_template(template_id, template_object)
+        template_controller.create_comms_template(template_id, template=template_object)
 
-        # When an object with the same id is uploaded
+        # When a template with the same id is uploaded
         with self.assertRaises(InvalidTemplateException):
-            template_controller.upload_comms_template(template_id, template_object)
+            template_controller.create_comms_template(template_id, template=template_object)
+
+    def test_update_non_existent_template_creates_new_template(self):
+        # given the template doesn't exist in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
+        template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
+                               uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
+
+        # When the template is updated
+        is_created = template_controller.update_comms_template(template_id, template=template_object)
+
+        # We receive an upload successful message with a boolean is_created
+        self.assertEquals(is_created, True)
 
     def test_get_non_existing_template(self):
         template_id = "db0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
@@ -32,7 +44,7 @@ class TestTemplateController(TestClient):
         template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
                                uri="test-uri.com", classification=classifiers)
 
-        template_controller.upload_comms_template(template_id, template_object)
+        template_controller.create_comms_template(template_id, template_object)
 
         # When we search for a template by classifiers we retrieve the matching template
         template_list = template_controller.get_comms_templates_by_classifiers(classifiers)
@@ -50,3 +62,16 @@ class TestTemplateController(TestClient):
         template_list = template_controller.get_comms_templates_by_classifiers(classifiers)
 
         self.assertEquals(template_list, None)
+
+    def test_delete_template(self):
+        # Given the template exists in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
+        template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
+                               uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
+
+        template_controller.create_comms_template(template_id, template_object)
+
+        # When the template is deleted
+        number_of_deleted_templates = template_controller.delete_comms_template(template_id)
+
+        self.assertEquals(number_of_deleted_templates, 1)
