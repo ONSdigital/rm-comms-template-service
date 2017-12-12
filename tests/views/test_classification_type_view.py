@@ -4,13 +4,13 @@ from tests.test_client import TestClient
 class TestClassificationTypeView(TestClient):
 
     def _create_classification_type(self, classification_type):
-        response = self.client.post('/classificationtype/{}'.format(classification_type))
+        response = self.client.post(f'/classificationtype/{classification_type}')
         self.assertStatus(response, 201)
 
     def test_upload_classification_type(self):
         # when we upload a new classification type
         classification_type = "LEGAL_BASIS"
-        response = self.client.post('/classificationtype/{}'.format(classification_type))
+        response = self.client.post(f'/classificationtype/{classification_type}')
 
         # Then the classification type is successfully uploaded to the database
         self.assertStatus(response, 201)
@@ -52,7 +52,7 @@ class TestClassificationTypeView(TestClient):
         self._create_classification_type(classification_type)
 
         # When we get the classification type
-        response = self.client.get("/classificationtype/{}".format(classification_type))
+        response = self.client.get(f'/classificationtype/{classification_type}')
 
         # Then the service returns the classfication type
         expected_response = {"name": classification_type}
@@ -64,7 +64,7 @@ class TestClassificationTypeView(TestClient):
         classification_type = "LEGAL_BASIS"
 
         # When we try to get the classification type
-        response = self.client.get("/classificationtype/{}".format(classification_type))
+        response = self.client.get(f'/classificationtype/{classification_type}')
 
         # Then the server returns a 404 response
         self.assertStatus(response, 404)
@@ -72,7 +72,7 @@ class TestClassificationTypeView(TestClient):
     def test_delete_classification_type(self):
         # Given there is an existing classification type in the database
         classification_type = "LEGAL_BASIS"
-        self._upload_classification_type(classification_type)
+        self._create_classification_type(classification_type)
 
         # When we delete the classification type
         response = self.client.delete(f'/classificationtype/{classification_type}')

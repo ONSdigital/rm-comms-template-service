@@ -12,13 +12,13 @@ def _get_classification(classification_type):
         classification = db.session.query(ClassificationType)\
             .filter(ClassificationType.name == classification_type).first()
     except SQLAlchemyError:
-        logger.exception('Unable to retrieve classification type', classification_type=classification_type)
-        raise DatabaseError(f'Unable to retrieve classification type with id: {classification_type}', status_code=500)
+        logger.exception("Unable to retrieve classification type", classification_type=classification_type)
+        raise DatabaseError(f'Unable to retrieve classification type: {classification_type}', status_code=500)
     return classification
 
 
 def create_classification_type(classification_type):
-    logger.info('Uploading classification type: {}'.format(classification_type))
+    logger.info(f'Uploading classification type: {classification_type}')
 
     existing_classification_type = _get_classification(classification_type)
 
@@ -54,24 +54,23 @@ def get_classification_types():
     logger.info("Attempted to retrieve classification types when none in database")
 
 
-def _delete_classification_type(classification_type):
+def _delete_classification_query(classification_type):
     try:
-        deleted_classification_types = db.session.query(ClassificationType).filter(ClassificationType.name ==
-                                                                                   classification_type).delete()
+        deleted_classification_types_count = db.session.query(ClassificationType).filter(ClassificationType.name ==
+                                                                                         classification_type).delete()
     except SQLAlchemyError:
         logger.exception("Unable to delete classification type", classification_type=classification_type)
         raise DatabaseError(f'Exception thrown while trying to delete classification type {classification_type}',
                             status_code=500)
-    return deleted_classification_types
+    return deleted_classification_types_count
 
 
 def delete_classification_type(classification_type):
-    deleted_classification_types = _delete_classification_type(classification_type)
-    if deleted_classification_types >= 1:
-        is_deleted = True
-        logger.info("Deleted classification type", classification_type=classification_type)
-    else:
-        is_deleted = False
-        logger.info("Attempted to delete non-existent classification type", classification_type=classification_type)
+    records_deleted = _delete_classification_query(classification_type)
 
-    return is_deleted
+    if records_deleted >= 1:
+        logger.info("Deleted classification type", classification_type=classification_type)
+        return True
+
+    logger.info("Attempted to delete non-existent classification type", classification_type=classification_type)
+    return False

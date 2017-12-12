@@ -7,7 +7,7 @@ class TestTemplateController(TestClient):
 
     def test_create_existing_template_raises_invalid_template_exception(self):
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
-        template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
+        template_object = dict(id=template_id, label="test data", type="EMAIL",
                                uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
 
         # Given the object already exists in the database
@@ -20,7 +20,7 @@ class TestTemplateController(TestClient):
     def test_update_non_existent_template_creates_new_template(self):
         # given the template doesn't exist in the database
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
-        template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
+        template_object = dict(id=template_id, label="test data", type="EMAIL",
                                uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
 
         # When the template is updated
@@ -30,10 +30,13 @@ class TestTemplateController(TestClient):
         self.assertEquals(is_created, True)
 
     def test_get_non_existing_template(self):
+        # Given the template doesn't exist in the database
         template_id = "db0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
 
+        # When the template is retrieved
         template = template_controller.get_comms_template_by_id(template_id)
 
+        # Then we receive None
         self.assertEquals(template, None)
 
     def test_get_template_by_classifiers(self):
@@ -65,13 +68,13 @@ class TestTemplateController(TestClient):
     def test_delete_template(self):
         # Given the template exists in the database
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
-        template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
+        template_object = dict(id=template_id, label="test data", type="EMAIL",
                                uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
 
         template_controller.create_comms_template(template_id, template_object)
 
         # When the template is deleted
-        number_of_deleted_templates = template_controller.delete_comms_template(template_id)
+        is_deleted = template_controller.delete_comms_template(template_id)
 
-        self.assertEquals(number_of_deleted_templates, 1)
-
+        # We receive a true is deleted response
+        self.assertEquals(is_deleted, True)
