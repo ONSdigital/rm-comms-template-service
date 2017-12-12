@@ -1,11 +1,13 @@
 from application.controllers import template_controller
 from application.utils.exceptions import InvalidTemplateException
 from tests.test_client import TestClient
+from unittest import mock
 
 
 class TestTemplateController(TestClient):
 
-    def test_create_existing_template_raises_invalid_template_exception(self):
+    @mock.patch('application.controllers.template_controller.get_classification_types', return_value=["GEOGRAPHY"])
+    def test_create_existing_template_raises_invalid_template_exception(self, get_classification_types):
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
         template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",
                                uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
@@ -36,7 +38,9 @@ class TestTemplateController(TestClient):
 
         self.assertEquals(template, None)
 
-    def test_get_template_by_classifiers(self):
+    @mock.patch('application.controllers.template_controller.get_classification_types',
+                return_value=["GEOGRAPHY", "INDUSTRY"])
+    def test_get_template_by_classifiers(self, get_classification_types):
         # given the template exists in the database
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
         classifiers = {"GEOGRAPHY": "NI",
@@ -62,7 +66,8 @@ class TestTemplateController(TestClient):
 
         self.assertEquals(template_list, None)
 
-    def test_delete_template(self):
+    @mock.patch('application.controllers.template_controller.get_classification_types', return_value=["GEOGRAPHY"])
+    def test_delete_template(self, get_classification_types):
         # Given the template exists in the database
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
         template_object = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91", label="test data", type="EMAIL",

@@ -36,8 +36,7 @@ class TestClassificationTypeView(TestClient):
 
         # Then the service returns the classification types
         self.assertStatus(response, 200)
-        expected_response = [{"name": "LEGAL_BASIS"}, {"name": "GEOGRAPHY"}]
-        self.assertEquals(response.json, expected_response)
+        self.assertEquals(response.json, ["LEGAL_BASIS", "GEOGRAPHY"])
 
     def test_get_classification_types_if_none_in_db(self):
         # Given there are no classification types in the database
@@ -55,9 +54,8 @@ class TestClassificationTypeView(TestClient):
         response = self.client.get("/classificationtype/{}".format(classification_type))
 
         # Then the service returns the classfication type
-        expected_response = {"name": classification_type}
         self.assertStatus(response, 200)
-        self.assertEquals(response.json, expected_response)
+        self.assertEquals(response.json, classification_type)
 
     def test_get_non_existent_classification_type(self):
         # Given the classification type doesn't exist

@@ -8,6 +8,7 @@ from application.models.models import CommunicationTemplate
 from application.utils.exceptions import InvalidTemplateException, DatabaseError
 from application.models.schema import template_schema
 from application.utils.database import db
+from application.controllers.classification_type_controller import get_classification_types
 
 
 logger = get_logger()
@@ -34,12 +35,24 @@ def get_templates_by_classifiers(classifiers):
     return templates
 
 
-def _validate_template(template):
+def _validate_template_schema(template):
     try:
         validate(template, template_schema)
     except ValidationError as exception:
         logger.exception('Attempted to upload invalid template')
         raise InvalidTemplateException(exception.message, status_code=400)
+
+
+def _validate_classification_types_exist(template_classifications):
+    existing_classification_types = get_classification_types()
+
+    if not existing_classification_types:
+        raise InvalidTemplateException('There are no classification types available to create a template', 500)
+
+    for classification_type in template_classifications:
+        if classification_type not in existing_classification_types:
+            raise InvalidTemplateException(
+                f'Classification type {classification_type} is not a valid classification type', status_code=400)
 
 
 def _create_or_update_template(template_id, template_object):
@@ -59,7 +72,10 @@ def _create_or_update_template(template_id, template_object):
 def create_comms_template(template_id, template=None):
     logger.info('Creating template', id=template_id)
 
-    _validate_template(template)
+    _validate_template_schema(template)
+
+    _validate_classification_types_exist(template.get('classification'))
+
     existing_template = _get_template_by_id(template_id)
 
     if existing_template:
@@ -73,7 +89,7 @@ def update_comms_template(template_id, template=None):
     logger.info('Updating template', id=template_id)
     is_created = True
 
-    _validate_template(template)
+    _validate_template_schema(template)
     existing_template = _get_template_by_id(template_id)
 
     if existing_template:

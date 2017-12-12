@@ -10,16 +10,6 @@ class CommunicationType(IntEnum):
     SMS = 2
 
 
-class ClassificationType(IntEnum):
-    LEGAL_STATUS = 0
-    INDUSTRY = 1
-    GEOGRAPHY = 2
-    COLLECTION_EXERCISE = 3
-    RU_REF = 4
-    SURVEY_REF = 5
-    ENROLMENT_STATUS = 6
-
-
 class CommunicationTemplate(db.Model):
     __tablename__ = 'template'
 
@@ -29,7 +19,6 @@ class CommunicationTemplate(db.Model):
     uri = db.Column(db.Text)
     classification = db.Column(JSONB)
     params = db.Column(JSONB)
-    schema = "templatesvc"
 
     def to_dict(self):
         return {

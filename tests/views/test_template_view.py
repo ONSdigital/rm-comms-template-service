@@ -1,5 +1,4 @@
 import json
-
 from tests.test_client import TestClient
 
 
@@ -11,17 +10,39 @@ class TestTemplateView(TestClient):
                                     data=json.dumps(data))
         self.assertStatus(response, 201)
 
-    def test_comms_template_upload(self):
+    def _create_classification_type(self, classification_type):
+        response = self.client.post('/classificationtype/{}'.format(classification_type))
+        self.assertStatus(response, 201)
+
+    def test_create_comms_template(self):
+        # Given the classification type exists
+        self._create_classification_type("GEOGRAPHY")
+
         # When a valid comms template is uploaded
         data = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
                     classification={"GEOGRAPHY": "NI"})
         response = self.client.post('/template/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
                                     data=json.dumps(data))
 
-        # Then it is uploaded successfully with a 201 response
+        # Then we receive a 201 response
         self.assertStatus(response, 201)
 
-    def test_invalid_comms_template_upload_(self):
+    def test_create_comms_template_with_no_classification_types_in_database(self):
+        # Given no classification types exist
+
+        # When a valid comms template is uploaded
+        data = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
+                    classification={"GEOGRAPHY": "NI"})
+        response = self.client.post('/template/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
+                                    data=json.dumps(data))
+        # Then we receive a 500 response with an appropriate message
+        self.assertStatus(response, 500)
+        self.assertEquals(response.json["error"], 'There are no classification types available to create a template')
+
+    def test_create_invalid_comms_template(self):
+        # Given a classification type exists
+        self._create_classification_type("GEOGRAPHY")
+
         # When an invalid comms template is uploaded
         data = dict(label="test data")
         response = self.client.post('/template/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
@@ -31,8 +52,22 @@ class TestTemplateView(TestClient):
         self.assertStatus(response, 400)
         self.assertEquals(response.json, {"error": "'id' is a required property"})
 
-    def test_get_template_by_id(self):
+    def test_create_comms_template_with_empty_classification(self):
+        # Given a classification type exists
+        self._create_classification_type("GEOGRAPHY")
+
+        # When an invalid comms template is uploaded
+        data = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
+                    classification=None)
+        response = self.client.post('/template/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
+                                    data=json.dumps(data))
+
+        # Then we receive a 400 response
+        self.assertStatus(response, 400)
+
+    def test_get_template(self):
         # Given there is a template in the database
+        self._create_classification_type("GEOGRAPHY")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                     classification={"GEOGRAPHY": "NI"})
@@ -59,6 +94,7 @@ class TestTemplateView(TestClient):
 
     def test_get_only_matching_templates_by_classifier(self):
         # Given there are multiple templates in the database
+        self._create_classification_type("GEOGRAPHY")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         classifiers = {"GEOGRAPHY": "NI"}
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
@@ -93,6 +129,7 @@ class TestTemplateView(TestClient):
 
     def test_get_multiple_templates_by_classifier(self):
         # Given there are multiple matching templates in the database
+        self._create_classification_type("GEOGRAPHY")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         classifiers = {"GEOGRAPHY": "NI"}
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com", classification=classifiers)
@@ -116,6 +153,7 @@ class TestTemplateView(TestClient):
 
     def test_update_template(self):
         # Given there is a template in the database
+        self._create_classification_type("GEOGRAPHY")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                     classification={"GEOGRAPHY": "NI"})
@@ -138,7 +176,8 @@ class TestTemplateView(TestClient):
         self.assertEquals(expected_template_object, template.json)
 
     def test_update_non_existent_template_creates_new(self):
-        # Given the template doesn't exist in the database
+        # Given the template existS in the database
+        self._create_classification_type("GEOGRAPHY")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                     classification={"GEOGRAPHY": "NI"})
@@ -157,6 +196,7 @@ class TestTemplateView(TestClient):
 
     def test_delete_template(self):
         # Given there is a template in the database
+        self._create_classification_type("GEOGRAPHY")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                     classification={"GEOGRAPHY": "NI"})
