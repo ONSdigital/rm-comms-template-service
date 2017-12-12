@@ -10,10 +10,15 @@ class CommsTemplateException(Exception):
 
 
 class InvalidTemplateException(CommsTemplateException):
-    """ Exception for handling malformed or incorrect data"""
+    """ Exception for handling malformed or incorrect data relating to templates"""
     pass
 
 
 class DatabaseError(CommsTemplateException):
     """ Exception for handling interactions with the database"""
+    pass
+
+
+class InvalidClassificationType(CommsTemplateException):
+    """ Exception for handling malformed or incorrect data relating to classifciation types"""
     pass

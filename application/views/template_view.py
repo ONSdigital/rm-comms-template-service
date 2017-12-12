@@ -6,9 +6,15 @@ template_view = Blueprint('template_view', __name__)
 
 @template_view.route('/template/<template_id>', methods=['POST'])
 def upload_template(template_id):
-    template = request.get_json()
-    template_controller.upload_comms_template(template_id, template)
+    template_controller.create_comms_template(template_id, template=request.get_json())
     return Response(status=201)
+
+
+@template_view.route('/template/<template_id>', methods=['PUT'])
+def update_template(template_id):
+    is_created = template_controller.update_comms_template(template_id, template=request.get_json())
+    http_code = 201 if is_created else 200
+    return Response(status=http_code)
 
 
 @template_view.route('/template/<template_id>', methods=['GET'])

@@ -56,6 +56,48 @@ class TestTemplateView(TestClient):
         response = self.client.get('/template/{}'.format(template_id))
 
         self.assertStatus(response, 404)
+        self.assertEquals(response.json, None)
+
+    def test_update_template(self):
+        # Given there is a template in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+        data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
+                    classification={"GEOGRAPHY": "NI"})
+        self._upload_template(template_id, data)
+
+        # When i update the template
+        new_data = data.copy()
+        new_data["label"] = "new label"
+
+        response = self.client.put("/template/{}".format(template_id), content_type='application/json',
+                                   data=json.dumps(new_data))
+
+        # Then i receive a 200 response and the template is correctly updated
+        self.assertStatus(response, 200)
+
+        expected_template_object = new_data.copy()
+        expected_template_object["params"] = None
+
+        template = self.client.get("/template/{}".format(template_id), content_type='application/json')
+        self.assertEquals(expected_template_object, template.json)
+
+    def test_update_non_existent_template_creates_new(self):
+        # Given the template doesn't exist in the database
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+        data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
+                    classification={"GEOGRAPHY": "NI"})
+
+        # When i update the template
+        response = self.client.put("/template/{}".format(template_id), content_type='application/json',
+                                   data=json.dumps(data))
+
+        # Then i receive a 201 response and the template is correctly updated
+        self.assertStatus(response, 201)
+        expected_template_object = data.copy()
+        expected_template_object["params"] = None
+
+        template = self.client.get("/template/{}".format(template_id), content_type='application/json')
+        self.assertEquals(expected_template_object, template.json)
 
     def test_delete_template(self):
         # Given there is a template in the database

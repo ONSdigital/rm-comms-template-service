@@ -21,7 +21,6 @@ class ClassificationType(IntEnum):
 
 
 class CommunicationTemplate(db.Model):
-    __tableargs__ = {"schema": "templatesvc"}
     __tablename__ = 'template'
 
     id = db.Column(UUID, unique=True, primary_key=True)
