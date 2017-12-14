@@ -13,3 +13,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # This handles session rollback on exception and commit on success,
     # https://github.com/mitsuhiko/flask-sqlalchemy/pull/115/files
+
+    SECURITY_USER_NAME = os.getenv('SECURITY_USER_NAME', 'dummy_user')
+    SECURITY_USER_PASSWORD = os.getenv('SECURITY_USER_PASSWORD', 'dummy_password')

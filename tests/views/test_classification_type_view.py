@@ -4,16 +4,24 @@ from tests.test_client import TestClient
 class TestClassificationTypeView(TestClient):
 
     def _create_classification_type(self, classification_type):
-        response = self.client.post(f'/classificationtype/{classification_type}')
+        response = self.client.post(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
         self.assertStatus(response, 201)
 
     def test_upload_classification_type(self):
         # when we upload a new classification type
         classification_type = "LEGAL_BASIS"
-        response = self.client.post(f'/classificationtype/{classification_type}')
+        response = self.client.post(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
 
         # Then the classification type is successfully uploaded to the database
         self.assertStatus(response, 201)
+
+    def test_create_classification_type_without_basic_auth(self):
+        # when we upload a new classification type
+        classification_type = "LEGAL_BASIS"
+        response = self.client.post('/classificationtype/{}'.format(classification_type))
+
+        # Then the service returns a 401 response
+        self.assertStatus(response, 401)
 
     def test_upload_existing_classification_type(self):
         # Given a ClassificationType exists in the database
@@ -21,7 +29,7 @@ class TestClassificationTypeView(TestClient):
         self._create_classification_type(classification_type)
 
         # When the same classification type is uploaded
-        response = self.client.post(f'/classificationtype/{classification_type}')
+        response = self.client.post(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
 
         # Then the service returns a 400 response
         self.assertStatus(response, 409)
