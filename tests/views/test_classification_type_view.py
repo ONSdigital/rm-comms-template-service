@@ -18,7 +18,7 @@ class TestClassificationTypeView(TestClient):
     def test_create_classification_type_without_basic_auth(self):
         # when we upload a new classification type
         classification_type = "LEGAL_BASIS"
-        response = self.client.post('/classificationtype/{}'.format(classification_type))
+        response = self.client.post(f'/classificationtype/{classification_type}')
 
         # Then the service returns a 401 response
         self.assertStatus(response, 401)

@@ -22,8 +22,6 @@ def create_app(config_path):
         # Creates the tables from the models
         db.create_all()
 
-    app.db = db
-
     # register view blueprints
     from application.views.info_view import info_view
     from application.views.template_view import template_view
