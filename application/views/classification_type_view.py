@@ -22,7 +22,7 @@ def get_classification_type(classification_type):
 
 @classification_type_view.route('/classificationtype/<classification_type>', methods=['POST'])
 @auth.login_required
-def upload_classification_type(classification_type):
+def create_classification_type(classification_type):
     classification_type_controller.create_classification_type(classification_type)
     return Response(status=201)
 

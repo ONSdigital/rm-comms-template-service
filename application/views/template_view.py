@@ -7,7 +7,7 @@ template_view = Blueprint('template_view', __name__)
 
 @template_view.route('/template/<template_id>', methods=['POST'])
 @auth.login_required
-def upload_template(template_id):
+def create_template(template_id):
     template_controller.create_comms_template(template_id, template=request.get_json())
     return Response(status=201)
 
