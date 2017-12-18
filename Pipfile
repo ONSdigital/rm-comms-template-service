@@ -21,6 +21,7 @@ structlog = "==17.2.0"
 flask-sqlalchemy = "==2.3"
 jsonschema = "==2.6.0"
 flask-httpauth = "==3.2.3"
+gunicorn = "==19.7.1"
 
 
 [dev-packages]
