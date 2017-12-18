@@ -7,6 +7,4 @@ class ClassificationType(db.Model):
     name = db.Column(db.Text, unique=True, primary_key=True)
 
     def to_dict(self):
-        return {
-            "name": self.name
-        }
+        return self.name
