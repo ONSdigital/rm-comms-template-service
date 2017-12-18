@@ -81,17 +81,28 @@ class TestClassificationTypeView(TestClient):
         self._create_classification_type(classification_type)
 
         # When we delete the classification type
-        response = self.client.delete(f'/classificationtype/{classification_type}')
+        response = self.client.delete(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
 
         # Then the server returns a 200 response
         self.assertStatus(response, 200)
+
+    def test_delete_classification_type_without_basic_auth(self):
+        # Given there is an existing classification type in the database
+        classification_type = "LEGAL_BASIS"
+        self._create_classification_type(classification_type)
+
+        # When we delete the classification type
+        response = self.client.delete(f'/classificationtype/{classification_type}')
+
+        # Then the server returns a 200 response
+        self.assertStatus(response, 401)
 
     def test_delete_non_existent_classification_type(self):
         # Given the classification type doesn't exist
         classification_type = "LEGAL_BASIS"
 
         # When we delete the classification type
-        response = self.client.delete(f'/classificationtype/{classification_type}')
+        response = self.client.delete(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
 
         # Then the server returns a 404 response
         self.assertStatus(response, 404)
