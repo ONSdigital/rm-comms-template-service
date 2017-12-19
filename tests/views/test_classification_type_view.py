@@ -20,7 +20,7 @@ class TestClassificationTypeView(TestClient):
         classification_type = "LEGAL_BASIS"
         response = self.client.post(f'/classificationtype/{classification_type}')
 
-        # Then the service returns a 401 response
+        # It is Unauthorized
         self.assertStatus(response, 401)
 
     def test_upload_existing_classification_type(self):
@@ -31,7 +31,7 @@ class TestClassificationTypeView(TestClient):
         # When the same classification type is uploaded
         response = self.client.post(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
 
-        # Then the service returns a 400 response
+        # Then it returns Conflict
         self.assertStatus(response, 409)
 
     def test_get_classification_types(self):
@@ -51,6 +51,7 @@ class TestClassificationTypeView(TestClient):
         # When we get all the classification types
         response = self.client.get("/classificationtype")
 
+        # Then no classification types are found
         self.assertStatus(response, 404)
 
     def test_get_classification_type(self):
@@ -72,7 +73,7 @@ class TestClassificationTypeView(TestClient):
         # When we try to get the classification type
         response = self.client.get(f'/classificationtype/{classification_type}')
 
-        # Then the server returns a 404 response
+        # Then the classification type is Not Found
         self.assertStatus(response, 404)
 
     def test_delete_classification_type(self):
@@ -83,7 +84,7 @@ class TestClassificationTypeView(TestClient):
         # When we delete the classification type
         response = self.client.delete(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
 
-        # Then the server returns a 200 response
+        # The classification is deleted
         self.assertStatus(response, 200)
 
     def test_delete_classification_type_without_basic_auth(self):
@@ -94,7 +95,7 @@ class TestClassificationTypeView(TestClient):
         # When we delete the classification type
         response = self.client.delete(f'/classificationtype/{classification_type}')
 
-        # Then the server returns a 200 response
+        # It is Unauthorized
         self.assertStatus(response, 401)
 
     def test_delete_non_existent_classification_type(self):
@@ -104,5 +105,5 @@ class TestClassificationTypeView(TestClient):
         # When we delete the classification type
         response = self.client.delete(f'/classificationtype/{classification_type}', headers=self.get_auth_headers())
 
-        # Then the server returns a 404 response
+        # It is Not Found
         self.assertStatus(response, 404)
