@@ -1,4 +1,5 @@
 from flask import Blueprint, make_response, jsonify, Response
+from application.utils.basic_auth import auth
 
 from application.controllers import classification_type_controller
 
@@ -20,12 +21,14 @@ def get_classification_type(classification_type):
 
 
 @classification_type_view.route('/classificationtype/<classification_type>', methods=['POST'])
-def upload_classification_type(classification_type):
+@auth.login_required
+def create_classification_type(classification_type):
     classification_type_controller.create_classification_type(classification_type)
     return Response(status=201)
 
 
 @classification_type_view.route('/classificationtype/<classification_type>', methods=['DELETE'])
+@auth.login_required
 def delete_classification_type(classification_type):
     is_deleted = classification_type_controller.delete_classification_type(classification_type)
     http_code = 200 if is_deleted else 404

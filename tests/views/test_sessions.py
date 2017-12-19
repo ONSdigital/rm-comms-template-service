@@ -9,7 +9,8 @@ class TestSessions(TestClient):
     I.e does it rollback sessions on exception, is it committed """
 
     def _create_classification_type(self, classification_type):
-        response = self.client.post('/classificationtype/{}'.format(classification_type))
+        response = self.client.post('/classificationtype/{}'.format(classification_type),
+                                    headers=self.get_auth_headers())
         self.assertStatus(response, 201)
 
     def test_rollback_on_exception(self):
@@ -20,7 +21,8 @@ class TestSessions(TestClient):
         data = dict(label="test data")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99"
         response = self.client.post(f'/template/{template_id}', content_type='application/json',
-                                    data=json.dumps(data))
+                                    data=json.dumps(data), headers=self.get_auth_headers())
+
         self.assertStatus(response, 400)
         self.assertEquals(response.json, {"error": "'id' is a required property"})
 
@@ -38,7 +40,8 @@ class TestSessions(TestClient):
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                     classification={"GEOGRAPHY": "NI"})
         response = self.client.post(f'/template/{template_id}', content_type='application/json',
-                                    data=json.dumps(data))
+                                    data=json.dumps(data), headers=self.get_auth_headers())
+
         self.assertStatus(response, 201)
 
         # Then it is persisted to the database
