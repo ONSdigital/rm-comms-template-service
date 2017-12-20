@@ -10,6 +10,7 @@ class Config(object):
     SCHEMA = os.getenv("SCHEMA", "templatesvc")
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI",
                                         "postgres://postgres:postgres@db:5432/postgres")
+    # Needs to be "postgres://postgres:postgres@localhost:6432/postgres" for gunicorn to work locally
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # This handles session rollback on exception and commit on success,
     # https://github.com/mitsuhiko/flask-sqlalchemy/pull/115/files
