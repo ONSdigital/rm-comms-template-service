@@ -41,5 +41,5 @@ The database will automatically be created when starting the application.
 Running the tests requires a running instance of the database. The easiest way to do this is run the application up 
 and then run the tests using tox.
 ```
-tox
+pipenv run tox
 ```
