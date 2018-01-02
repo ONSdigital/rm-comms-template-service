@@ -19,6 +19,19 @@ class TestTemplateController(TestClient):
         with self.assertRaises(InvalidTemplateException):
             template_controller.create_comms_template(template_id, template=template_object)
 
+    @mock.patch('application.controllers.template_controller.get_classification_types', return_value=["GEOGRAPHY"])
+    def test_create_template_with_invalid_classification_type(self, get_classification_types):
+        # Given the classification type doesn't exist
+
+        # When a template with the same id is uploaded
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
+        template_object = dict(id=template_id, label="test data", type="EMAIL",
+                               uri="test-uri.com", classification={"LEGAL BASIS": "NI"})
+
+        # Then it throws an invalid exception
+        with self.assertRaises(InvalidTemplateException):
+            template_controller.create_comms_template(template_id, template=template_object)
+
     def test_update_non_existent_template_creates_new_template(self):
         # given the template doesn't exist in the database
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
