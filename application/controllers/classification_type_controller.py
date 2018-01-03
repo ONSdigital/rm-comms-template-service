@@ -30,9 +30,14 @@ def create_classification_type(classification_type):
 
     classification = ClassificationType(name=classification_type)
 
-    db.session.add(classification)
+    try:
+        db.session.add(classification)
+    except SQLAlchemyError:
+        logger.exception("Unable to create classification type", classification_type=classification_type)
+        raise DatabaseError(f'Exception thrown while trying to create classification type: {classification_type}',
+                            status_code=500)
 
-    logger.info("Uploaded new classification type", classification_type=classification_type)
+    logger.info("Created new classification type", classification_type=classification_type)
 
 
 def get_classification_type(classification_type):
