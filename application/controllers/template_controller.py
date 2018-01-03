@@ -64,8 +64,12 @@ def _create_or_update_template(template_id, template_object):
 
     template = CommunicationTemplate(id=template_id, label=label, type=type, uri=uri, classification=classification,
                                      params=params)
+    try:
+        db.session.merge(template)
+    except SQLAlchemyError:
+        logger.exception('Unable to create or update template', template_id=template_id)
+        raise DatabaseError(f'Unable to create or update template: {template_id}', status_code=500)
 
-    db.session.merge(template)
     logger.info("Uploaded template", id=template_id)
 
 

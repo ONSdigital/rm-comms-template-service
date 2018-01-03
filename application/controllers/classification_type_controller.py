@@ -46,7 +46,11 @@ def get_classification_type(classification_type):
 
 
 def get_classification_types():
-    classification_types = db.session.query(ClassificationType).all()
+    try:
+        classification_types = db.session.query(ClassificationType).all()
+    except SQLAlchemyError:
+        logger.exception("Unable to get classification types")
+        raise DatabaseError('Exception thrown while trying to get all classification types', status_code=500)
 
     if classification_types:
         return [classification.to_dict() for classification in classification_types]
