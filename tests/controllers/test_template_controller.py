@@ -1,7 +1,9 @@
-from application.controllers import template_controller
-from application.utils.exceptions import InvalidTemplateException
-from tests.test_client import TestClient
 from unittest import mock
+from sqlalchemy.exc import SQLAlchemyError
+
+from application.controllers import template_controller
+from application.utils.exceptions import InvalidTemplateException, DatabaseError
+from tests.test_client import TestClient
 
 
 class TestTemplateController(TestClient):
@@ -96,3 +98,23 @@ class TestTemplateController(TestClient):
 
         # We receive a true is deleted response
         self.assertEquals(is_deleted, True)
+
+    @mock.patch('application.controllers.template_controller.db')
+    def test_get_template(self, mock_db):
+        # Given there is an error connecting with the database
+        mock_db.session.query = mock.MagicMock(side_effect=SQLAlchemyError)
+
+        # When we try to get a template
+        # Then it raises a database error
+        with self.assertRaises(DatabaseError):
+            template_controller.get_comms_template_by_id("cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91")
+
+    @mock.patch('application.controllers.template_controller.db')
+    def test_delete_template_exception(self, mock_db):
+        # Given there is an error connecting with the database
+        mock_db.session.query = mock.MagicMock(side_effect=SQLAlchemyError)
+
+        # When we try to delete a template
+        # Then it raises a database error
+        with self.assertRaises(DatabaseError):
+            template_controller.delete_comms_template("cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91")
