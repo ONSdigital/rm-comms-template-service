@@ -118,3 +118,30 @@ class TestTemplateController(TestClient):
         # Then it raises a database error
         with self.assertRaises(DatabaseError):
             template_controller.delete_comms_template("cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91")
+
+    @mock.patch('application.controllers.template_controller.get_classification_types', return_value=["GEOGRAPHY"])
+    @mock.patch('application.controllers.template_controller._get_template_by_id', return_value=None)
+    @mock.patch('application.controllers.template_controller.db')
+    def test_create_template(self, mock_db, mock_get_template_by_id, mock_get_classifcation_types):
+        # Given there is an error connecting with the database
+        mock_db.session.merge = mock.MagicMock(side_effect=SQLAlchemyError)
+
+        # When a template with the same id is uploaded
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef91"
+        template_object = dict(id=template_id, label="test data", type="EMAIL",
+                               uri="test-uri.com", classification={"GEOGRAPHY": "NI"})
+
+        # Then it raises a database error
+        with self.assertRaises(DatabaseError):
+            template_controller.create_comms_template(template_id, template=template_object)
+
+    @mock.patch('application.controllers.template_controller.db')
+    def test_get_template_by_classifier(self, mock_db):
+        # Given there is an error connecting with the database
+        mock_db.session.query = mock.MagicMock(side_effect=SQLAlchemyError)
+
+        # When we try to get a template by classifier
+        # Then it raises a database error
+        with self.assertRaises(DatabaseError):
+            template_controller.get_templates_by_classifiers(classifiers={"GEOGRAPHY": "NI",
+                                                                          "INDUSTRY": "construction"})
