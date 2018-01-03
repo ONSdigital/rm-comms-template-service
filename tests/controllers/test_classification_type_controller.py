@@ -59,7 +59,18 @@ class TestClassificationTypeController(TestClient):
         # Given there is an error connecting with the database
         mock_db.session.query = mock.MagicMock(side_effect=SQLAlchemyError)
 
-        # When we try to get all the classification types
+        # When we try to delete a classification type
         # Then it raises a database error
         with self.assertRaises(DatabaseError):
             classification_type_controller.delete_classification_type('LEGAL BASIS')
+
+    @mock.patch('application.controllers.classification_type_controller._get_classification', return_value=None)
+    @mock.patch('application.controllers.classification_type_controller.db')
+    def test_create_classification_type(self, mock_db, mock_get_classification_type):
+        # Given there is an error connecting with the database
+        mock_db.session.add = mock.MagicMock(side_effect=SQLAlchemyError)
+
+        # When we try to create a classification type
+        # Then it raises a database error
+        with self.assertRaises(DatabaseError):
+            classification_type_controller.create_classification_type('LEGAL BASIS')
