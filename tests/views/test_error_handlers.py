@@ -12,7 +12,7 @@ class TestExceptionHandlers(TestClient):
         mock_classification_type_controller.delete_classification_type.side_effect = Exception
 
         # When we delete a classification type
-        response = self.client.delete('/classificationtype/LEGAL_BASIS', headers=self.get_auth_headers())
+        response = self.client.delete('/classificationtypes/LEGAL_BASIS', headers=self.get_auth_headers())
 
         # we get an error response
         self.assertStatus(response, 500)
@@ -25,7 +25,7 @@ class TestExceptionHandlers(TestClient):
             error="Database Exception", status_code=500)
 
         # When we delete a classification type
-        response = self.client.delete('/classificationtype/LEGAL_BASIS', headers=self.get_auth_headers())
+        response = self.client.delete('/classificationtypes/LEGAL_BASIS', headers=self.get_auth_headers())
 
         # we get an appropriate error response
         self.assertStatus(response, 500)
