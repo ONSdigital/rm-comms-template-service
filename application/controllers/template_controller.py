@@ -7,7 +7,7 @@ from jsonschema import validate, ValidationError
 from application.models.models import CommunicationTemplate
 from application.utils.exceptions import InvalidTemplateException, DatabaseError
 from application.models.schema import template_schema
-from application.utils.database import db
+from flask import current_app
 from application.controllers.classification_type_controller import get_classification_types
 
 
@@ -18,7 +18,7 @@ PREEXISTING_TEMPLATE = 'ID already exists'
 
 def _get_template_by_id(template_id):
     try:
-        template = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
+        template = current_app.db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id).first()
     except SQLAlchemyError:
         logger.exception("Unable to retrieve template", id=template_id)
         raise DatabaseError(f'Unable to retrieve template with id: {template_id}', status_code=500)
@@ -27,7 +27,7 @@ def _get_template_by_id(template_id):
 
 def get_templates_by_classifiers(classifiers):
     try:
-        templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.classification == classifiers)\
+        templates = current_app.db.session.query(CommunicationTemplate).filter(CommunicationTemplate.classification == classifiers)\
             .all()
     except SQLAlchemyError:
         logger.exception('Unable to retrieve template with classifiers', classifiers=classifiers)
@@ -135,7 +135,7 @@ def delete_comms_template(template_id):
 
 def _delete_template(template_id):
     try:
-        deleted_templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id)\
+        deleted_templates = current_app.db.session.query(CommunicationTemplate).filter(CommunicationTemplate.id == template_id)\
             .delete()
     except SQLAlchemyError:
         logger.exception('Unable to delete template', id=template_id)

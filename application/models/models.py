@@ -1,7 +1,10 @@
 from enum import IntEnum
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.dialects.postgresql.json import JSONB
-from application.utils.database import db
+from sqlalchemy import Text, Column, Enum
+
+Base = declarative_base()
 
 
 class CommunicationType(IntEnum):
@@ -10,15 +13,15 @@ class CommunicationType(IntEnum):
     SMS = 2
 
 
-class CommunicationTemplate(db.Model):
+class CommunicationTemplate(Base):
     __tablename__ = 'template'
 
-    id = db.Column(UUID, unique=True, primary_key=True)
-    label = db.Column(db.Text)
-    type = db.Column(db.Enum(CommunicationType))
-    uri = db.Column(db.Text)
-    classification = db.Column(JSONB)
-    params = db.Column(JSONB)
+    id = Column(UUID, unique=True, primary_key=True)
+    label = Column(Text)
+    type = Column(Enum(CommunicationType))
+    uri = Column(Text)
+    classification = Column(JSONB)
+    params = Column(JSONB)
 
     def to_dict(self):
         return {

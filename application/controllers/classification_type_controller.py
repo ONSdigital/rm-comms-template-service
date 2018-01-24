@@ -3,13 +3,13 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from application.models.classification_type import ClassificationType
 from application.utils.exceptions import InvalidClassificationType, DatabaseError
-from application.utils.database import db
+from flask import current_app
 logger = get_logger()
 
 
 def _get_classification(classification_type):
     try:
-        classification = db.session.query(ClassificationType)\
+        classification = current_app.db.session.query(ClassificationType)\
             .filter(ClassificationType.name == classification_type).first()
     except SQLAlchemyError:
         logger.exception("Unable to retrieve classification type", classification_type=classification_type)

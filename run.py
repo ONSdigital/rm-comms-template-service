@@ -1,26 +1,23 @@
+import logging
+import os
+import structlog
+
+
+from flask import Flask, _app_ctx_stack
 from flask_cors import CORS
-from flask import Flask
-from sqlalchemy import event, DDL
+from retrying import RetryError, retry
+from sqlalchemy import create_engine, column, text
+from sqlalchemy.exc import ProgrammingError, DatabaseError
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.sql import exists, select
+from json import loads
 
-from application.utils.logging import configure_structlogger
-from application.models.models import db
 
-
-def create_app(config_path):
+def create_app():
     # create and configure the Flask app
     app = Flask(__name__)
-    app.config.from_object(config_path)
-
-    from application.models.models import CommunicationTemplate, CommunicationType # NOQA  # pylint: disable=wrong-import-position
-    from application.models.classification_type import ClassificationType # NOQA  # pylint: disable=wrong-import-position
-
-    # Set up database
-    with app.app_context():
-        db.init_app(app)
-        # Creates the schema, can't create the tables otherwise
-        event.listen(db.metadata, 'before_create', DDL("CREATE SCHEMA IF NOT EXISTS templatesvc"))
-        # Creates the tables from the models
-        db.create_all()
+    app_config = 'config.{}'.format('Config')
+    app.config.from_object(app_config)
 
     # register view blueprints
     from application.views.info_view import info_view
@@ -36,13 +33,62 @@ def create_app(config_path):
     return app
 
 
+def retry_if_database_error(exception):
+    logging.error(exception)
+    return isinstance(exception, DatabaseError) and not isinstance(exception, ProgrammingError)
+
+
+@retry(retry_on_exception=retry_if_database_error, wait_fixed=2000, stop_max_delay=30000, wrap_exception=True)
+def initialise_db(app):
+    app.db = create_database(app.config['SQLALCHEMY_DATABASE_URI'],
+                             app.config['SCHEMA'])
+
+
+def create_database(db_connection, db_schema):
+    from application.models import models
+
+    def current_request():
+        return _app_ctx_stack.__ident_func__()
+
+    engine = create_engine(db_connection, convert_unicode=True)
+    session = scoped_session(sessionmaker(), scopefunc=current_request)
+    session.configure(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
+    engine.session = session
+
+    if db_connection.startswith('postgres'):
+
+        for t in models.Base.metadata.sorted_tables:
+            t.schema = db_schema
+
+        schemata_exists = exists(select([column('schema_name')])
+                                 .select_from(text("information_schema.schemata"))
+                                 .where(text(f"schema_name = '{db_schema}'")))
+
+        if not session().query(schemata_exists).scalar():
+            logging.info("Creating schema ", db_schema=db_schema)
+            engine.execute(f"CREATE SCHEMA {db_schema}")
+            logging.info("Creating database tables.")
+            models.Base.metadata.create_all(engine)
+
+    else:
+        logging.info("Creating database tables.")
+        models.Base.metadata.create_all(engine)
+
+    logging.info("Ok, database tables have been created.")
+    return engine
+
+
 if __name__ == '__main__':
     config_path = "config.Config"
 
-    app = create_app(config_path)
+    app = create_app()
 
-    configure_structlogger(app.config)
+    try:
+        initialise_db(app)
+    except RetryError:
+        logging.exception('Failed to initialise database')
+        exit(1)
 
     host, port = app.config['HOST'], int(app.config['PORT'])
-
+    logging.error(port)
     app.run(debug=app.config['DEBUG'], host=host, port=port)
