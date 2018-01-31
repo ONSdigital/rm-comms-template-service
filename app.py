@@ -4,5 +4,5 @@ from run import create_app
 
 config_path = "config.Config"
 
-app = create_app(config_path)
+app = create_app()
 
