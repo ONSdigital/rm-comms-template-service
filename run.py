@@ -1,7 +1,4 @@
 import logging
-import os
-import structlog
-
 
 from flask import Flask, _app_ctx_stack
 from flask_cors import CORS
@@ -10,7 +7,6 @@ from sqlalchemy import create_engine, column, text
 from sqlalchemy.exc import ProgrammingError, DatabaseError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.sql import exists, select
-from json import loads
 
 
 def create_app():
