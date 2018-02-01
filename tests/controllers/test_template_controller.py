@@ -69,18 +69,18 @@ class TestTemplateController(TestClient):
         template_controller.create_comms_template(template_id, template_object)
 
         # When we search for a template by classifiers we retrieve the matching template
-        template_list = template_controller.get_comms_templates_by_classifiers(classifiers=classifiers)
+        template_list = template_controller.get_comms_template_by_classifiers(classifiers=classifiers)
 
         expected_response = template_object.copy()
         expected_response["params"] = None
 
-        self.assertEquals(template_list, [expected_response])
+        self.assertEquals(template_list, expected_response)
 
     def test_get_non_existent_template_by_classifier(self):
         # Given the template doesnt exist in the database
 
         # When we search for a template by classifiers we retrieve the matching template
-        template_list = template_controller.get_comms_templates_by_classifiers(classifiers={"GEOGRAPHY": "NI"})
+        template_list = template_controller.get_comms_template_by_classifiers(classifiers={"GEOGRAPHY": "NI"})
 
         self.assertEquals(template_list, None)
 
@@ -136,12 +136,12 @@ class TestTemplateController(TestClient):
             template_controller.create_comms_template(template_id, template=template_object)
 
     @mock.patch('application.controllers.template_controller.db')
-    def test_get_template_by_classifier(self, mock_db):
+    def test_get_template_by_classifier_throws_exception(self, mock_db):
         # Given there is an error connecting with the database
         mock_db.session.query = mock.MagicMock(side_effect=SQLAlchemyError)
 
         # When we try to get a template by classifier
         # Then it raises a database error
         with self.assertRaises(DatabaseError):
-            template_controller.get_templates_by_classifiers(classifiers={"GEOGRAPHY": "NI",
-                                                                          "INDUSTRY": "construction"})
+            template_controller.get_comms_template_by_classifiers(classifiers={"GEOGRAPHY": "NI",
+                                                                               "INDUSTRY": "construction"})
