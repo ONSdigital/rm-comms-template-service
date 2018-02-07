@@ -37,7 +37,7 @@ The following endpoints are associated with the classification types that are us
 
 ## Get a template by classifiers
 
-* `GET /templates` will return a communications templates which matches the classifiers, these are passed in the request json.
+* `GET /templates` will return a communications template which matches the classifiers, these are passed in the request json.
 
 Example Response
 ```json

@@ -144,4 +144,5 @@ class TestTemplateController(TestClient):
         # Then it raises a database error
         with self.assertRaises(DatabaseError):
             template_controller.get_comms_template_by_classifiers(classifiers={"GEOGRAPHY": "NI",
-                                                                               "INDUSTRY": "construction"})
+                                                                               "INDUSTRY": "construction",
+                                                                               })
