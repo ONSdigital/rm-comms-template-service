@@ -35,13 +35,13 @@ The following endpoints are associated with the classification types that are us
 
 * `PUT /templates/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef87` with a valid template object in the request json.
 
-## Get templates by classifiers
+## Get a template by classifiers
 
-* `GET /templates` will return a list of communications templates which match the classifiers, these are passed in the request json.
+* `GET /templates` will return a communications template which matches the classifiers, these are passed in the request json.
 
 Example Response
 ```json
-[{
+{
  "classification": {
   "GEOGRAPHY": "NI"
   }, 
@@ -49,17 +49,8 @@ Example Response
 "label": "test data", 
 "params": "", 
 "type": "EMAIL", 
-"uri": "test-uri.com"}, 
-{
- "classification": {
-  "GEOGRAPHY": "NI"
- }, 
-"id": "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef90", 
-"label": "test data", 
-"params": "", 
-"type": "EMAIL", 
-"uri": "test-uri.com"
-}]
+"uri": "test-uri.com"}
+
 ```
 ## Get a template by id
 

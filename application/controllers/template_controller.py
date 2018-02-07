@@ -25,14 +25,23 @@ def _get_template_by_id(template_id):
     return template
 
 
-def get_templates_by_classifiers(classifiers):
+def get_template_by_classifiers(classifiers):
     try:
-        templates = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.classification == classifiers)\
-            .all()
+        template = db.session.query(CommunicationTemplate).filter(CommunicationTemplate.classification == classifiers)\
+            .first()
     except SQLAlchemyError:
         logger.exception('Unable to retrieve template with classifiers', classifiers=classifiers)
         raise DatabaseError(f'Unable to retrieve template with classifiers: {json.dumps(classifiers)}', status_code=500)
-    return templates
+    return template
+
+
+def get_comms_template_by_classifiers(classifiers=None):
+    template = get_template_by_classifiers(classifiers)
+
+    if template:
+        return template.to_dict()
+
+    logger.info('Could not find template with classifiers', classifiers=classifiers)
 
 
 def _validate_template_schema(template):
@@ -110,15 +119,6 @@ def get_comms_template_by_id(template_id):
         return template.to_dict()
 
     logger.info('Tried to GET non-existent template', id=template_id)
-
-
-def get_comms_templates_by_classifiers(classifiers=None):
-    templates = get_templates_by_classifiers(classifiers)
-
-    if templates:
-        return [template.to_dict() for template in templates]
-
-    logger.info('Could not find template with classifiers', classifiers=classifiers)
 
 
 def delete_comms_template(template_id):
