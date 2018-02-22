@@ -2,7 +2,7 @@ FROM python:3.6
 
 WORKDIR /app
 COPY . /app
-EXPOSE 8081
+EXPOSE 8182
 RUN pip3 install pipenv==8.3.1 && pipenv install --deploy --system
 
 ENTRYPOINT ["python3"]
