@@ -1,4 +1,7 @@
 import os
+from application.cloud.cloudfoundry import ONSCloudFoundry
+
+cf = ONSCloudFoundry()
 
 
 class Config(object):
@@ -8,8 +11,12 @@ class Config(object):
     PORT = os.getenv("PORT", 8182)
     DEBUG = os.getenv("DEBUG", False)
     SCHEMA = os.getenv("SCHEMA", "templatesvc")
-    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI",
-                                        "postgres://postgres:postgres@postgres:5432/postgres")
+
+    if cf.detected:
+        SQLALCHEMY_DATABASE_URI = cf.db.credentials['uri']
+    else:
+        SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:6432/postgres')
+
     # Needs to be "postgres://postgres:postgres@localhost:6432/postgres" for gunicorn to work locally
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # This handles session rollback on exception and commit on success,
