@@ -16,11 +16,11 @@ class TestTemplateView(TestClient):
 
     def test_create_comms_template(self):
         # Given the classification type exists
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         # When a valid comms template is uploaded
         data = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
         response = self.client.post('/templates/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
                                     data=json.dumps(data), headers=self.get_auth_headers())
 
@@ -32,7 +32,7 @@ class TestTemplateView(TestClient):
 
         # When a valid comms template is uploaded
         data = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
 
         response = self.client.post('/templates/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
                                     data=json.dumps(data), headers=self.get_auth_headers())
@@ -43,11 +43,11 @@ class TestTemplateView(TestClient):
 
     def test_create_comms_template_without_basic_auth(self):
         # Given the classification type exists
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         # When a valid comms template is uploaded without correct basic auth
         data = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
         response = self.client.post('/templates/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99', content_type='application/json',
                                     data=json.dumps(data))
 
@@ -56,7 +56,7 @@ class TestTemplateView(TestClient):
 
     def test_create_invalid_comms_template(self):
         # Given a classification type exists
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         # When an invalid comms template is uploaded
         data = dict(label="test data")
@@ -69,7 +69,7 @@ class TestTemplateView(TestClient):
 
     def test_create_comms_template_with_empty_classification(self):
         # Given a classification type exists
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         # When an invalid comms template is uploaded
         data = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
@@ -82,10 +82,10 @@ class TestTemplateView(TestClient):
 
     def test_get_template(self):
         # Given there is a template in the database
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
         self._create_template(template_id, data)
 
         # When the template is searched by id
@@ -94,7 +94,7 @@ class TestTemplateView(TestClient):
         # Then the correct data is received
         self.assertStatus(response, 200)
         expected_response_json = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
-                                      classification={"GEOGRAPHY": "NI"}, params=None)
+                                      classification={"REGION": "NI"}, params=None)
         self.assertEquals(response.json, expected_response_json)
 
     def test_get_non_existent_template(self):
@@ -109,21 +109,21 @@ class TestTemplateView(TestClient):
 
     def test_get_only_matching_template_by_classifier(self):
         # Given there are multiple templates in the database
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
-        classifiers = {"GEOGRAPHY": "NI"}
+        classifiers = {"REGION": "NI"}
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                     classification=classifiers)
         self._create_template(template_id, data)
 
         template_id_2 = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99"
-        classifiers_2 = {"GEOGRAPHY": "ENGLAND"}
+        classifiers_2 = {"REGION": "ENGLAND"}
         data_2 = dict(id=template_id_2, label="test data", type="EMAIL", uri="test-uri.com",
                       classification=classifiers_2)
         self._create_template(template_id_2, data_2)
 
         # When i attempt to get templates by matching classifier
-        response = self.client.get("/templates?GEOGRAPHY=NI")
+        response = self.client.get("/templates?REGION=NI")
 
         # Then i a list of matching templates
         return_object = data.copy()
@@ -132,22 +132,74 @@ class TestTemplateView(TestClient):
         self.assertStatus(response, 200)
         self.assertEquals(response.json, return_object)
 
-    def test_get_non_existent_template_by_classifier(self):
+    def test_get_non_existent_template_by_only_region_classifier(self):
         # Given no template is in the database
 
         # When we attempt to get the template by it's classifiers
-        response = self.client.get("/templates?GEOGRAPHY=NI")
+        response = self.client.get("/templates?REGION=NI")
 
         # Then it is Not Found
         self.assertStatus(response, 404)
         self.assertEquals(response.json, None)
 
+    def test_get_non_existent_template_by_classifier(self):
+        # Given no template is in the database
+
+        # When we attempt to get the template by it's classifiers
+        response = self.client.get("/templates?LEGAL_BASIS=GOVERED")
+
+        # Then it is Not Found
+        self.assertStatus(response, 404)
+        self.assertEquals(response.json, None)
+
+    def test_get_no_template_if_none_matching(self):
+        # Given there are templates in the database
+        self._create_classification_type("REGION")
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+        classifiers = {"REGION": "NI"}
+        data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
+                    classification=classifiers)
+        self._create_template(template_id, data)
+
+        template_id_2 = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99"
+        classifiers_2 = {"REGION": "ENGLAND"}
+        data_2 = dict(id=template_id_2, label="test data", type="EMAIL", uri="test-uri.com",
+                      classification=classifiers_2)
+        self._create_template(template_id_2, data_2)
+
+        # When we search for a different template
+        response = self.client.get("/templates?REGION=FF")
+
+        # Then it is Not Found
+        self.assertStatus(response, 404)
+        self.assertEquals(response.json, None)
+
+    def test_get_template_by_default_region(self):
+        # Given there ia a template with no region
+        self._create_classification_type("REGION")
+        self._create_classification_type("LEGAL_BASIS")
+        template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
+        classifiers = {"LEGAL_BASIS": "GOVERED"}
+        data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
+                    classification=classifiers)
+        self._create_template(template_id, data)
+
+        # When we try to getting a template with no exact match but matches by all other fields
+        response = self.client.get("/templates?REGION=FF&LEGAL_BASIS=GOVERED")
+
+        # Then I get the  template
+        return_object = data.copy()
+        return_object["params"] = None
+
+        self.assertStatus(response, 200)
+        self.assertEquals(response.json, return_object)
+
     def test_update_template(self):
         # Given there is a template in the database
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
         self._create_template(template_id, data)
 
         # When i update the template
@@ -168,11 +220,11 @@ class TestTemplateView(TestClient):
 
     def test_update_template_without_basic_auth(self):
         # Given there is a template in the database
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
         self._create_template(template_id, data)
 
         # When i update the template without basic auth
@@ -187,11 +239,11 @@ class TestTemplateView(TestClient):
 
     def test_update_non_existent_template_creates_new(self):
         # Given the template existS in the database
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
 
         # When i update the template
         response = self.client.put(f'/templates/{template_id}', content_type='application/json',
@@ -207,11 +259,11 @@ class TestTemplateView(TestClient):
 
     def test_delete_template(self):
         # Given there is a template in the database
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
         self._create_template(template_id, data)
 
         # When the template is deleted by id
@@ -222,11 +274,11 @@ class TestTemplateView(TestClient):
 
     def test_delete_template_without_basic_auth(self):
         # Given there is a template in the database
-        self._create_classification_type("GEOGRAPHY")
+        self._create_classification_type("REGION")
 
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89"
         data = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
-                    classification={"GEOGRAPHY": "NI"})
+                    classification={"REGION": "NI"})
         self._create_template(template_id, data)
 
         # When the template is deleted by id

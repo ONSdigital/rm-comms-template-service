@@ -35,8 +35,23 @@ def get_template_by_classifiers(classifiers):
     return template
 
 
+def get_template_by_partial_match(classifiers):
+
+    # classifiers are an ImmutableMultiDict, so can't pop without converting to dict
+    mutable_classifers = classifiers.copy()
+
+    # Only putting region classifier in for NI, default is blank otherwise to save inputting for every possible region
+    mutable_classifers.pop('REGION', None)
+
+    return get_template_by_classifiers(mutable_classifers)
+
+
 def get_comms_template_by_classifiers(classifiers=None):
+
     template = get_template_by_classifiers(classifiers)
+
+    if not template:
+        template = get_template_by_partial_match(classifiers)
 
     if template:
         return template.to_dict()
