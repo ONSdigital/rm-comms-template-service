@@ -1,4 +1,5 @@
 import cfenv
+import re
 
 
 class ONSCloudFoundry(object):
@@ -12,4 +13,4 @@ class ONSCloudFoundry(object):
 
     @property
     def db(self):
-        return self._cf_env.get_service(label='rds')
+        return self._cf_env.get_service(label=re.compile(r'rds*'))
