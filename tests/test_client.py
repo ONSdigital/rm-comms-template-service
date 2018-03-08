@@ -4,7 +4,7 @@ from flask import current_app
 
 from application.models.models import CommunicationTemplate
 from application.models.classification_type import ClassificationType
-from run import create_app
+from run import create_app, initialise_db
 from application.utils.database import db
 
 
@@ -18,7 +18,9 @@ class TestClient(TestCase):
 
     @staticmethod
     def create_app():
-        return create_app("tests.config.TestConfig")
+        app = create_app("tests.config.TestConfig")
+        initialise_db(app)
+        return app
 
     def tearDown(self):
         session = db.session()
