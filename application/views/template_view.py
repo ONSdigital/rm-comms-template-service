@@ -5,10 +5,10 @@ from application.utils.basic_auth import auth
 template_view = Blueprint('template_view', __name__)
 
 
-@template_view.route('/templates/<template_id>', methods=['POST'])
+@template_view.route('/templates', methods=['POST'])
 @auth.login_required
-def create_template(template_id):
-    template_controller.create_comms_template(template_id, template=request.get_json())
+def create_template():
+    template_controller.create_comms_template(template=request.get_json())
     return Response(status=201)
 
 

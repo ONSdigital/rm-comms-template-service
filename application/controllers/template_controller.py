@@ -97,7 +97,8 @@ def _create_or_update_template(template_id, template_object):
     logger.info("Uploaded template", id=template_id)
 
 
-def create_comms_template(template_id, template=None):
+def create_comms_template(template):
+    template_id = template.get('id')
     logger.info('Creating template', id=template_id)
 
     _validate_template_schema(template)
