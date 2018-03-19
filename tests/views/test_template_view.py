@@ -27,6 +27,20 @@ class TestTemplateView(TestClient):
         # Then it is Created
         self.assertStatus(response, 201)
 
+    def test_create_existing_comms_template(self):
+        # Given the template already exists
+        self._create_classification_type("REGION")
+        template = dict(id="cb0711c3-0ac8-41d3-ae0e-567e5ea1ef99", label="test data", type="EMAIL", uri="test-uri.com",
+                        classification={"REGION": "NI"})
+        self._create_template(template)
+
+        # When we try to create an identical template
+        response = self.client.post('/templates', content_type='application/json',
+                                    data=json.dumps(template), headers=self.get_auth_headers())
+        # Then we receive an invalid request response
+        self.assertStatus(response, 409)
+        self.assertEquals(response.json, {"error": "ID already exists"})
+
     def test_create_comms_template_with_no_classification_types_in_database(self):
         # Given no classification types exist
 
