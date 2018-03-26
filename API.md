@@ -25,7 +25,7 @@ The following endpoints are associated with the classification types that are us
 
 ## Create a template
 
-* `POST /templates/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef87` with a valid template object in the request json.
+* `POST /templates` with a valid template object in the request json.
 
 ## Delete a template
 
