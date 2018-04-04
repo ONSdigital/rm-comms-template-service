@@ -37,13 +37,12 @@ The following endpoints are associated with the classification types that are us
 
 ## Get a template by classifiers
 
-* `GET /templates` will return a communications template which matches the classifiers, these are passed in the request json.
-
+* `GET /templates?REGION=NI` will return a communications template which matches, REGION=NI. 
 Example Response
 ```json
 {
  "classification": {
-  "GEOGRAPHY": "NI"
+  "REGION": "NI"
   }, 
 "id": "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef89", 
 "label": "test data", 
