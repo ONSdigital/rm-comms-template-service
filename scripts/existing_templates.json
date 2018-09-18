@@ -1,0 +1,86 @@
+[
+  {
+    "label": "Statistics of Trade Act 1947 Reminder (NI)",
+    "id": "a28e44e2-c5d4-4dfc-b36f-110267490683",
+    "uri": "42f04432-bc71-4073-bf61-c101fc18ac22",
+    "type": "EMAIL",
+    "classification": {
+      "REGION": "YY",
+      "LEGAL_BASIS": "Statistics of Trade Act 1947",
+      "COMMUNICATION_TYPE": "REMINDER"
+    }
+  },
+  {
+    "id": "819fe967-847a-442d-bb00-cbe2023500e4",
+    "label": "Voluntary Not Stated Reminder (GB)",
+    "type": "EMAIL",
+    "uri": "ae3c992e-8935-440c-b43a-47d5d1b2d079",
+    "classification": {
+      "LEGAL_BASIS": "Voluntary Not Stated",
+      "COMMUNICATION_TYPE": "REMINDER"
+    }
+  },
+  {
+    "id": "8f0df7ce-f5ed-47f8-8d76-b30d1bddaa64",
+    "label": "Voluntary Not Stated Reminder (NI)",
+    "type": "EMAIL",
+    "uri": "4fe40e82-3fd0-435b-ab9c-870b706292d9",
+    "classification": {
+      "REGION": "YY",
+      "LEGAL_BASIS": "Voluntary Not Stated",
+      "COMMUNICATION_TYPE": "REMINDER"
+    }
+  },
+  {
+    "id": "1841a8bc-85dd-43f0-b577-b152f1a220f1",
+    "label": "Statistics of Trade Act 1947 Notification (GB)",
+    "type": "EMAIL",
+    "uri": "f340c59b-dd99-4022-8390-c367212203ed",
+    "classification": {
+      "LEGAL_BASIS": "Statistics of Trade Act 1947",
+      "COMMUNICATION_TYPE": "NOTIFICATION"
+    }
+  },
+  {
+    "id": "1f3b39b4-f2b1-4126-86c1-889dfe589306",
+    "label": "Statistics of Trade Act 1947 Notification (NI)",
+    "type": "EMAIL",
+    "uri": "cafd7113-f631-4b65-8771-5bafb03b79de",
+    "classification": {
+      "REGION": "YY",
+      "LEGAL_BASIS": "Statistics of Trade Act 1947",
+      "COMMUNICATION_TYPE": "NOTIFICATION"
+    }
+  },
+  {
+    "id": "6c4e35e3-e4ca-4756-888e-550ff4944452",
+    "label": "Voluntary Not Stated Notification (GB)",
+    "type": "EMAIL",
+    "uri": "381edb76-fafe-4517-9142-4db1a5fff6ce",
+    "classification": {
+      "LEGAL_BASIS": "Voluntary Not Stated",
+      "COMMUNICATION_TYPE": "NOTIFICATION"
+    }
+  },
+  {
+    "id": "d5a0c48e-f831-44f4-9784-f1a078093331",
+    "label": "Voluntary Not Stated Notification (NI)",
+    "type": "EMAIL",
+    "uri": "098b826c-8c32-4453-b892-60dd0e0b6cd4",
+    "classification": {
+      "REGION": "YY",
+      "LEGAL_BASIS": "Voluntary Not Stated",
+      "COMMUNICATION_TYPE": "NOTIFICATION"
+    }
+  },
+  {
+    "id": "0aa7afb2-b256-41ca-a4a0-c3c4f471db09",
+    "label": "Statistics of Trade Act 1947 Reminder (GB)",
+    "type": "EMAIL",
+    "uri": "19a0aa89-797f-4a34-ad54-267fd581f2ef",
+    "classification": {
+      "LEGAL_BASIS": "Statistics of Trade Act 1947",
+      "COMMUNICATION_TYPE": "REMINDER"
+    }
+  }
+]
