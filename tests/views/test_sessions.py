@@ -24,12 +24,12 @@ class TestSessions(TestClient):
                                     data=json.dumps(data), headers=self.get_auth_headers())
 
         self.assertStatus(response, 400)
-        self.assertEquals(response.json, {"error": "'id' is a required property"})
+        self.assertEqual(response.json, {"error": "'id' is a required property"})
 
         # Then it is not uploaded to the database
         template = _get_template_by_id(template_id)
 
-        self.assertEquals(template, None)
+        self.assertEqual(template, None)
 
     def test_commit_on_successful_request(self):
         # Given there are classification types
@@ -50,4 +50,4 @@ class TestSessions(TestClient):
         expected_data = data.copy()
         expected_data["params"] = None
 
-        self.assertEquals(template.to_dict(), expected_data)
+        self.assertEqual(template.to_dict(), expected_data)

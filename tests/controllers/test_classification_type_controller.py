@@ -24,7 +24,7 @@ class TestClassificationTypeController(TestClient):
         classification = classification_type_controller.get_classification_type(classification_type)
 
         # Then we receive none
-        self.assertEquals(classification, None)
+        self.assertEqual(classification, None)
 
     def test_get_non_existing_classification_types(self):
         # Given there are no classification types in the database
@@ -32,7 +32,7 @@ class TestClassificationTypeController(TestClient):
         classification_types = classification_type_controller.get_classification_types()
 
         # Then we receive none
-        self.assertEquals(classification_types, None)
+        self.assertEqual(classification_types, None)
 
     @mock.patch('application.controllers.classification_type_controller.db')
     def test_get_classification_types(self, mock_db):

@@ -39,7 +39,7 @@ class TestTemplateView(TestClient):
                                     data=json.dumps(template), headers=self.get_auth_headers())
         # Then we receive an invalid request response
         self.assertStatus(response, 409)
-        self.assertEquals(response.json, {"error": "ID already exists"})
+        self.assertEqual(response.json, {"error": "ID already exists"})
 
     def test_create_comms_template_with_no_classification_types_in_database(self):
         # Given no classification types exist
@@ -53,7 +53,7 @@ class TestTemplateView(TestClient):
 
         # Then we receive an appropriate error message
         self.assertStatus(response, 500)
-        self.assertEquals(response.json["error"], 'There are no classification types available to create a template')
+        self.assertEqual(response.json["error"], 'There are no classification types available to create a template')
 
     def test_create_comms_template_without_basic_auth(self):
         # Given the classification type exists
@@ -79,7 +79,7 @@ class TestTemplateView(TestClient):
 
         # Then we receive a Bad Request with a validation message
         self.assertStatus(response, 400)
-        self.assertEquals(response.json, {"error": "'id' is a required property"})
+        self.assertEqual(response.json, {"error": "'id' is a required property"})
 
     def test_create_comms_template_with_empty_classification(self):
         # Given a classification type exists
@@ -109,7 +109,7 @@ class TestTemplateView(TestClient):
         self.assertStatus(response, 200)
         expected_response_json = dict(id=template_id, label="test data", type="EMAIL", uri="test-uri.com",
                                       classification={"REGION": "NI"}, params=None)
-        self.assertEquals(response.json, expected_response_json)
+        self.assertEqual(response.json, expected_response_json)
 
     def test_get_non_existent_template(self):
         # Given a template does not exist in the database
@@ -144,7 +144,7 @@ class TestTemplateView(TestClient):
         return_object["params"] = None
 
         self.assertStatus(response, 200)
-        self.assertEquals(response.json, return_object)
+        self.assertEqual(response.json, return_object)
 
     def test_get_non_existent_template_by_only_region_classifier(self):
         # Given no template is in the database
@@ -154,7 +154,7 @@ class TestTemplateView(TestClient):
 
         # Then it is Not Found
         self.assertStatus(response, 404)
-        self.assertEquals(response.json, None)
+        self.assertEqual(response.json, None)
 
     def test_get_non_existent_template_by_classifier(self):
         # Given no template is in the database
@@ -164,7 +164,7 @@ class TestTemplateView(TestClient):
 
         # Then it is Not Found
         self.assertStatus(response, 404)
-        self.assertEquals(response.json, None)
+        self.assertEqual(response.json, None)
 
     def test_get_no_template_if_none_matching(self):
         # Given there are templates in the database
@@ -184,7 +184,7 @@ class TestTemplateView(TestClient):
 
         # Then it is Not Found
         self.assertStatus(response, 404)
-        self.assertEquals(response.json, None)
+        self.assertEqual(response.json, None)
 
     def test_get_template_by_default_region(self):
         # Given there ia a template with no region
@@ -203,7 +203,7 @@ class TestTemplateView(TestClient):
         return_object["params"] = None
 
         self.assertStatus(response, 200)
-        self.assertEquals(response.json, return_object)
+        self.assertEqual(response.json, return_object)
 
     def test_update_template(self):
         # Given there is a template in the database
@@ -227,7 +227,7 @@ class TestTemplateView(TestClient):
         expected_template_object["params"] = None
 
         template = self.client.get(f'/templates/{template_id}', content_type='application/json')
-        self.assertEquals(expected_template_object, template.json)
+        self.assertEqual(expected_template_object, template.json)
 
     def test_update_template_without_basic_auth(self):
         # Given there is a template in the database
@@ -266,7 +266,7 @@ class TestTemplateView(TestClient):
         expected_template_object["params"] = None
 
         template = self.client.get(f'/templates/{template_id}', content_type='application/json')
-        self.assertEquals(expected_template_object, template.json)
+        self.assertEqual(expected_template_object, template.json)
 
     def test_delete_template(self):
         # Given there is a template in the database

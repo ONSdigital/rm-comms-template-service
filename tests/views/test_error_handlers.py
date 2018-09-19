@@ -16,7 +16,7 @@ class TestExceptionHandlers(TestClient):
 
         # we get an error response
         self.assertStatus(response, 500)
-        self.assertEquals(response.json, {'error': "Internal Server error"})
+        self.assertEqual(response.json, {'error': "Internal Server error"})
 
     @mock.patch('application.views.classification_type_view.classification_type_controller')
     def test_handle_database_exception(self, mock_classification_type_controller):
@@ -29,4 +29,4 @@ class TestExceptionHandlers(TestClient):
 
         # we get an appropriate error response
         self.assertStatus(response, 500)
-        self.assertEquals(response.json, {'error': "Database Exception"})
+        self.assertEqual(response.json, {'error': "Database Exception"})

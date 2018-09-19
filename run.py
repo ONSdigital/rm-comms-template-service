@@ -33,7 +33,7 @@ def create_app(config_path):
 
 
 def retry_if_database_error(exception):
-    logger.error(exception)
+    logger.error("Error when initialising database", error=exception)
     return isinstance(exception, DatabaseError) and not isinstance(exception, ProgrammingError)
 
 

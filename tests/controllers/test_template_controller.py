@@ -42,7 +42,7 @@ class TestTemplateController(TestClient):
         is_created = template_controller.update_comms_template(template_id, template=template_object)
 
         # We receive an upload successful message with a boolean is_created
-        self.assertEquals(is_created, True)
+        self.assertEqual(is_created, True)
 
     def test_get_non_existing_template(self):
         # Given the template doesn't exist in the database
@@ -52,7 +52,7 @@ class TestTemplateController(TestClient):
         template = template_controller.get_comms_template_by_id(template_id)
 
         # Then we receive None
-        self.assertEquals(template, None)
+        self.assertEqual(template, None)
 
     @mock.patch('application.controllers.template_controller.get_classification_types',
                 return_value=["GEOGRAPHY", "INDUSTRY"])
@@ -71,7 +71,7 @@ class TestTemplateController(TestClient):
         expected_response = template_object.copy()
         expected_response["params"] = None
 
-        self.assertEquals(template_list, expected_response)
+        self.assertEqual(template_list, expected_response)
 
     def test_get_non_existent_template_by_classifier(self):
         # Given the template doesnt exist in the database
@@ -79,7 +79,7 @@ class TestTemplateController(TestClient):
         # When we search for a template by classifiers we retrieve the matching template
         template_list = template_controller.get_comms_template_by_classifiers(classifiers={"GEOGRAPHY": "NI"})
 
-        self.assertEquals(template_list, None)
+        self.assertEqual(template_list, None)
 
     @mock.patch('application.controllers.template_controller.get_classification_types', return_value=["GEOGRAPHY"])
     def test_delete_template(self, get_classification_types):
@@ -94,7 +94,7 @@ class TestTemplateController(TestClient):
         is_deleted = template_controller.delete_comms_template(template_id)
 
         # We receive a true is deleted response
-        self.assertEquals(is_deleted, True)
+        self.assertEqual(is_deleted, True)
 
     @mock.patch('application.controllers.template_controller.db')
     def test_get_template(self, mock_db):
