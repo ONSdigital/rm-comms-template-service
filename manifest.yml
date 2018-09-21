@@ -6,6 +6,6 @@ applications:
   instances: 1
   memory: 512M
   services:
-  - rm-comms-template-db
+  - rm-commstemplate-db
   stack: cflinuxfs2
   timeout: 180
