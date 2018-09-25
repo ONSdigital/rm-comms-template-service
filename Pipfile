@@ -1,17 +1,12 @@
 [[source]]
-
 verify_ssl = true
 name = "pypi"
 url = "https://pypi.python.org/simple"
 
-
 [requires]
-
 python_version = "3.6"
 
-
 [packages]
-
 cfenv = "*"
 flask = "*"
 flask-cors = "*"
@@ -24,10 +19,9 @@ jsonschema = "*"
 flask-httpauth = "*"
 gunicorn = "*"
 retrying = "*"
-
+requests = "*"
 
 [dev-packages]
-
 tox = "*"
 nose = "*"
 coverage = "*"

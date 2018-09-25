@@ -1,28 +1,37 @@
+import argparse
 import requests
-from flask import json, current_app
+import json
 
 headers = {'Content-type': 'application/json'}
 
+parser = argparse.ArgumentParser(description='Pass in a service URL, user & password')
+default_url = parser.add_argument('default_url', help='Main URL')
+arg_user = parser.add_argument('user', help='User')
+arg_password = parser.add_argument('password', help='Pass')
+args = parser.parse_args()
+
+
 # Script which adds new templates to the comms-service db along with the associated classifiers
-# Run with the cmd pipenv run python scripts/config_comms_templates.py
+# Run with the cmd pipenv run python scripts/config_comms_templates.py 'url', 'user', 'password'
 with open('scripts/templates_to_load.json') as read_file:
     contents = json.load(read_file)
 
-    region = "http://localhost:8182/classificationtypes/REGION"
+arg_url = args.default_url
+username = args.user
+password = args.password
+url = f'{arg_url}/templates'
 
-    legal_basis = "http://localhost:8182/classificationtypes/LEGAL_BASIS"
+region = f'{arg_url}/classificationtypes/REGION'
 
-    communication = "http://localhost:8182/classificationtypes/COMMUNICATION_TYPE"
+legal_basis = f'{arg_url}/classificationtypes/LEGAL_BASIS'
 
-    user = current_app.config['SECURITY_USER_NAME']
-    pwd = current_app.config['SECURITY_USER_PASSWORD']
+communication = f'{arg_url}/classificationtypes/COMMUNICATION_TYPE'
 
-    requests.post(region, auth=(user, pwd), headers=headers)
-    requests.post(legal_basis, auth=(user, pwd), headers=headers)
-    requests.post(communication, auth=(user, pwd), headers=headers)
+requests.post(region, auth=(username, password), headers=headers)
+requests.post(legal_basis, auth=(username, password), headers=headers)
+requests.post(communication, auth=(username, password), headers=headers)
 
-    for content in contents:
-        url = "http://localhost:8182/templates"
-        r = requests.post(url, json=content, auth=(user, pwd), headers=headers)
+for content in contents:
+    r = requests.post(url, json=content,  auth=(username, password), headers=headers)
 
-        print('Successfully added template')
+    print('Successfully added template')
