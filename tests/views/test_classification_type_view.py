@@ -40,7 +40,7 @@ class TestClassificationTypeView(TestClient):
         self._create_classification_type("REGION")
 
         # When we get all the classification types
-        response = self.client.get("/classificationtypes")
+        response = self.client.get("/classificationtypes", headers=self.get_auth_headers())
 
         # Then the service returns the classification types
         self.assertStatus(response, 200)
@@ -49,7 +49,7 @@ class TestClassificationTypeView(TestClient):
     def test_get_classification_types_if_none_in_db(self):
         # Given there are no classification types in the database
         # When we get all the classification types
-        response = self.client.get("/classificationtypes")
+        response = self.client.get("/classificationtypes", headers=self.get_auth_headers())
 
         # Then no classification types are found
         self.assertStatus(response, 404)
@@ -60,7 +60,7 @@ class TestClassificationTypeView(TestClient):
         self._create_classification_type(classification_type)
 
         # When we get the classification type
-        response = self.client.get(f'/classificationtypes/{classification_type}')
+        response = self.client.get(f'/classificationtypes/{classification_type}', headers=self.get_auth_headers())
 
         # Then the service returns the classfication type
         self.assertStatus(response, 200)
@@ -71,7 +71,7 @@ class TestClassificationTypeView(TestClient):
         classification_type = "LEGAL_BASIS"
 
         # When we try to get the classification type
-        response = self.client.get(f'/classificationtypes/{classification_type}')
+        response = self.client.get(f'/classificationtypes/{classification_type}', headers=self.get_auth_headers())
 
         # Then the classification type is Not Found
         self.assertStatus(response, 404)

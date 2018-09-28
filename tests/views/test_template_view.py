@@ -103,7 +103,7 @@ class TestTemplateView(TestClient):
         self._create_template(data)
 
         # When the template is searched by id
-        response = self.client.get(f'/templates/{template_id}')
+        response = self.client.get(f'/templates/{template_id}', headers=self.get_auth_headers())
 
         # Then the correct data is received
         self.assertStatus(response, 200)
@@ -116,7 +116,7 @@ class TestTemplateView(TestClient):
         template_id = "cb0711c3-0ac8-41d3-ae0e-567e5ea1ef79"
 
         # When the template is searched by id
-        response = self.client.get(f'/templates/{template_id}')
+        response = self.client.get(f'/templates/{template_id}', headers=self.get_auth_headers())
 
         # Then it is Not Found
         self.assertStatus(response, 404)
@@ -137,7 +137,7 @@ class TestTemplateView(TestClient):
         self._create_template(data_2)
 
         # When i attempt to get templates by matching classifier
-        response = self.client.get("/templates?REGION=NI")
+        response = self.client.get("/templates?REGION=NI", headers=self.get_auth_headers())
 
         # Then i a list of matching templates
         return_object = data.copy()
@@ -150,7 +150,7 @@ class TestTemplateView(TestClient):
         # Given no template is in the database
 
         # When we attempt to get the template by it's classifiers
-        response = self.client.get("/templates?REGION=NI")
+        response = self.client.get("/templates?REGION=NI", headers=self.get_auth_headers())
 
         # Then it is Not Found
         self.assertStatus(response, 404)
@@ -160,7 +160,7 @@ class TestTemplateView(TestClient):
         # Given no template is in the database
 
         # When we attempt to get the template by it's classifiers
-        response = self.client.get("/templates?LEGAL_BASIS=GOVERED")
+        response = self.client.get("/templates?LEGAL_BASIS=GOVERED", headers=self.get_auth_headers())
 
         # Then it is Not Found
         self.assertStatus(response, 404)
@@ -180,7 +180,7 @@ class TestTemplateView(TestClient):
         self._create_template(data_2)
 
         # When we search for a different template
-        response = self.client.get("/templates?REGION=FF")
+        response = self.client.get("/templates?REGION=FF", headers=self.get_auth_headers())
 
         # Then it is Not Found
         self.assertStatus(response, 404)
@@ -196,7 +196,7 @@ class TestTemplateView(TestClient):
         self._create_template(data)
 
         # When we try to getting a template with no exact match but matches by all other fields
-        response = self.client.get("/templates?REGION=FF&LEGAL_BASIS=GOVERED")
+        response = self.client.get("/templates?REGION=FF&LEGAL_BASIS=GOVERED", headers=self.get_auth_headers())
 
         # Then I get the  template
         return_object = data.copy()
@@ -226,7 +226,8 @@ class TestTemplateView(TestClient):
         expected_template_object = new_data.copy()
         expected_template_object["params"] = None
 
-        template = self.client.get(f'/templates/{template_id}', content_type='application/json')
+        template = self.client.get(f'/templates/{template_id}', content_type='application/json',
+                                   headers=self.get_auth_headers())
         self.assertEqual(expected_template_object, template.json)
 
     def test_update_template_without_basic_auth(self):
@@ -265,7 +266,8 @@ class TestTemplateView(TestClient):
         expected_template_object = data.copy()
         expected_template_object["params"] = None
 
-        template = self.client.get(f'/templates/{template_id}', content_type='application/json')
+        template = self.client.get(f'/templates/{template_id}', content_type='application/json',
+                                   headers=self.get_auth_headers())
         self.assertEqual(expected_template_object, template.json)
 
     def test_delete_template(self):

@@ -7,6 +7,7 @@ classification_type_view = Blueprint('classification_type_view', __name__)
 
 
 @classification_type_view.route('/classificationtypes', methods=['GET'])
+@auth.login_required
 def get_classification_types():
     classification_types = classification_type_controller.get_classification_types()
     http_code = 200 if classification_types else 404
@@ -14,6 +15,7 @@ def get_classification_types():
 
 
 @classification_type_view.route('/classificationtypes/<classification_type>', methods=['GET'])
+@auth.login_required
 def get_classification_type(classification_type):
     classification = classification_type_controller.get_classification_type(classification_type)
     http_code = 200 if classification else 404

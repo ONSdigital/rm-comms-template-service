@@ -21,6 +21,7 @@ def update_template(template_id):
 
 
 @template_view.route('/templates/<template_id>', methods=['GET'])
+@auth.login_required
 def get_template_by_id(template_id):
     template = template_controller.get_comms_template_by_id(template_id)
     http_code = 200 if template else 404
@@ -28,6 +29,7 @@ def get_template_by_id(template_id):
 
 
 @template_view.route('/templates', methods=['GET'])
+@auth.login_required
 def get_template_by_classifiers():
     template = template_controller.get_comms_template_by_classifiers(classifiers=request.args)
     http_code = 200 if template else 404

@@ -15,7 +15,7 @@ The following endpoints are associated with the classification types that are us
 
 ### GET a classification type
 
-* `GET /classificationtypes/GEOGRAPHY` will return the classification type or None if it doesn"t exist.
+* `GET /classificationtypes/GEOGRAPHY` will return the classification type or None if it doesn't exist.
 
 ### GET all classification types
 
@@ -53,7 +53,7 @@ Example Response
 ```
 ## Get a template by id
 
-* `GET /templates/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef87` will return the template object which matches the template id or None if it doesn"t exist.
+* `GET /templates/cb0711c3-0ac8-41d3-ae0e-567e5ea1ef87` will return the template object which matches the template id or None if it doesn't exist.
 ```json
 {
  "classification": {
