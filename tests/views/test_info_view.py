@@ -8,7 +8,7 @@ class TestInfoView(TestClient):
 
         # Given the application is running
         # When a get is made to the info end point
-        response = self.client.get('/info', headers=self.get_auth_headers())
+        response = self.client.get('/info')
 
         # Then the info returns a 200
         self.assertStatus(response, 200)
