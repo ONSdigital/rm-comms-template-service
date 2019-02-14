@@ -1,16 +1,37 @@
 sudo: required
+
 services:
   - docker
+
 language: python
+
 python:
   - "3.6"
+
 before_install:
   - docker-compose --verbose build
   - docker-compose up -d
+
 install:
   - pip install pipenv
   - pipenv install --dev --deploy
+
 script:
   - pipenv run tox
+
 after_success:
+  - if [ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker build -t "$DESTINATION_IMAGE_NAME" .;
+    docker login -u "${DOCKER_GCP_USERNAME}" -p "${DOCKER_GCP_PASSWORD}" "${DOCKER_GCP_REGISTRY}";
+    docker push "$DESTINATION_IMAGE_NAME";
+    fi
   - bash <(curl -s https://codecov.io/bash)
+
+env:
+  global:
+    - DESTINATION_IMAGE_NAME="$DOCKER_GCP_LOCATION/census-rm-commstemplatesvc"
+    - PIPENV_IGNORE_VIRTUALENVS=1
+
+branches:
+  only:
+    - rm-census
