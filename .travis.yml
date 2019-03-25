@@ -17,6 +17,7 @@ install:
   - pipenv install --dev --deploy
 
 script:
+  - pipenv check
   - pipenv run tox
 
 after_success:
@@ -29,8 +30,8 @@ after_success:
 
 env:
   global:
-    - DESTINATION_IMAGE_NAME="$DOCKER_GCP_LOCATION/census-rm-commstemplatesvc"
     - PIPENV_IGNORE_VIRTUALENVS=1
+    - DESTINATION_IMAGE_NAME="$DOCKER_GCP_LOCATION/census-rm-commstemplatesvc"
 
 branches:
   only:
