@@ -67,3 +67,15 @@ Example Response
 }
 
 ```
+
+## Show service info
+
+* `GET /info` will return the service name and version number
+Example response
+```json
+{
+"name":"rm-comms-template",
+"version":"0.0.1"
+}
+
+```
