@@ -17,7 +17,7 @@ class Config(object):
         SQLALCHEMY_DATABASE_URI = cf.db.credentials['uri']
     else:
         SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI',
-                                            'postgres://postgres:postgres@postgres:5432/postgres')
+                                            'postgresql://postgres:postgres@postgres:5432/postgres')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # This handles session rollback on exception and commit on success,
