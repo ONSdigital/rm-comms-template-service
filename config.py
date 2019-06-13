@@ -9,7 +9,7 @@ class Config(object):
     SCHEME = os.getenv("SCHEME", "http")
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = os.getenv("PORT", 8182)
-    VERSION = os.getenv('VERSION', '0.1.0')
+    VERSION = os.getenv('VERSION', '0.3.0')
     DEBUG = os.getenv("DEBUG", False)
     SCHEMA = os.getenv("SCHEMA", "templatesvc")
 
