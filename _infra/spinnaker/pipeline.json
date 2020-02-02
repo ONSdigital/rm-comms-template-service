@@ -1,0 +1,21 @@
+{
+  "schema": "v2",
+  "application": "comms-template",
+  "name": "comms-template",
+  "template": {
+    "artifactAccount": "front50ArtifactCredentials",
+    "reference": "spinnaker://rasrmApplicationTemplate",
+    "type": "front50/pipelineTemplate"
+  },
+  "variables": {
+    "name": "comms-template",
+    "defaultHelmChart": "comms-template-0.1.0.tgz",
+    "helmChartMatcher": "comms-template-.*\\.tgz"
+  },
+  "exclude": [],
+  "triggers": [],
+  "parameters": [],
+  "notifications": [],
+  "description": "",
+  "stages": []
+}
