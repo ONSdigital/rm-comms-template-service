@@ -11,3 +11,9 @@ test: lint
 
 start:
 	pipenv run python run.py
+
+build-docker:
+	docker build .
+
+build-kubernetes:
+	docker build -f _infra/docker/Dockerfile .
