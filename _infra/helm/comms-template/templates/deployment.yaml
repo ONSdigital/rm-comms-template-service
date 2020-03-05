@@ -124,7 +124,7 @@ spec:
             value: "{{ .Values.container.port }}"
           - name: SQLALCHEMY_DATABASE_URI
             {{- if .Values.database.sqlProxyEnabled }}
-            value: "postgres://$(DB_USERNAME):$(DB_PASSWORD)@$127.0.0.1:$(DB_PORT)/$(DB_NAME)"
+            value: "postgres://$(DB_USERNAME):$(DB_PASSWORD)@127.0.0.1:$(DB_PORT)/$(DB_NAME)"
             {{- else }}
             value: "postgres://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)"
             {{- end }}
