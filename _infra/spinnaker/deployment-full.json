@@ -1,16 +1,15 @@
 {
   "schema": "v2",
   "application": "comms-template",
-  "name": "comms-template",
+  "name": "deployment",
   "template": {
     "artifactAccount": "front50ArtifactCredentials",
-    "reference": "spinnaker://rasrmApplicationTemplate",
+    "reference": "spinnaker://fullDeploymentTemplate",
     "type": "front50/pipelineTemplate"
   },
   "variables": {
-    "name": "comms-template",
-    "defaultHelmChart": "comms-template-0.1.0.tgz",
-    "helmChartMatcher": "comms-template-.*\\.tgz"
+    "service": "comms-template",
+    "defaultVersion": "1.0.0"
   },
   "exclude": [],
   "triggers": [],
