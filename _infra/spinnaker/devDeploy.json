@@ -9,8 +9,10 @@
   },
   "variables": {
     "namespace": "dev",
+    "configNamespace": "dev",
     "environment": "dev",
-    "service": "comms-template"
+    "service": "comms-template",
+    "bucket": "ras-rm-configuration"
   },
   "exclude": [],
   "triggers": [],
