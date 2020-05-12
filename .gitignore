@@ -5,3 +5,4 @@
 .cache/
 htmlcov/
 RM_Comms_Template.egg-info/
+coverage.xml

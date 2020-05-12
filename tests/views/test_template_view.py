@@ -6,7 +6,7 @@ class TestTemplateView(TestClient):
     """ Template View unit tests"""
 
     def _create_template(self, template):
-        response = self.client.post(f'/templates', content_type='application/json',
+        response = self.client.post(f'/templates', content_type='application/json',  # noqa: F541
                                     data=json.dumps(template), headers=self.get_auth_headers())
         self.assertStatus(response, 201)
 
