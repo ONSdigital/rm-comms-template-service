@@ -1,23 +1,15 @@
 import os
-from application.cloud.cloudfoundry import ONSCloudFoundry
-
-cf = ONSCloudFoundry()
 
 
-class Config(object):
-    NAME = os.getenv('NAME', "rm-comms-template")
-    SCHEME = os.getenv("SCHEME", "http")
+class Config:
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = os.getenv("PORT", 8182)
     VERSION = os.getenv('VERSION', '0.3.0')
     DEBUG = os.getenv("DEBUG", False)
-    SCHEMA = os.getenv("SCHEMA", "templatesvc")
+    LOGGING_LEVEL = os.getenv('LOGGING_LEVEL', 'INFO')
 
-    if cf.detected:
-        SQLALCHEMY_DATABASE_URI = cf.db.credentials['uri']
-    else:
-        SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI',
-                                            'postgresql://postgres:postgres@postgres:5432/postgres')
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI',
+                                        'postgresql://postgres:postgres@localhost:5432/postgres')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # This handles session rollback on exception and commit on success,

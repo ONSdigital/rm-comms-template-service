@@ -1,7 +1,6 @@
 from json import loads
 from pathlib import Path
 
-from flask import current_app
 from application import __version__
 
 
@@ -14,7 +13,7 @@ if Path('git_info').exists():
 
 def get_info():
     info = {
-        "name": current_app.config['NAME'],
+        "name": 'rm-comms-template',
         "version": __version__,
     }
     info = dict(_health_check, **info)

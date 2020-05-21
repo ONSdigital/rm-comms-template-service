@@ -27,9 +27,10 @@ def configure_structlogger(config):
         """
         Add the service name to the event dict.
         """
-        event_dict['service'] = config['NAME']
+        event_dict['service'] = 'rm-comms-template'
         return event_dict
 
+    logging.basicConfig(level=config['LOGGING_LEVEL'])
     processors = [
         structlog.processors.TimeStamper(fmt='iso'),
         structlog.stdlib.filter_by_level,
