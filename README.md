@@ -1,3 +1,5 @@
+Repo has been replaced by our notify cloud function.
+
 # RM Comms Template
 [![Build Status](https://travis-ci.org/ONSdigital/rm-comms-template-service.svg?branch=master)](https://travis-ci.org/ONSdigital/rm-comms-template-service) 
 [![codecov](https://codecov.io/gh/ONSdigital/rm-comms-template-service/branch/master/graph/badge.svg)](https://codecov.io/gh/ONSdigital/rm-comms-template-service)
